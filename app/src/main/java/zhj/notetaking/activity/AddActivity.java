@@ -71,6 +71,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
                 Intent it = new Intent(AddActivity.this, NoteActivity.class);
 
+
                 if (which.equals("1")) {                //执行插入操作
                     if (!newnote.equals("") || !newnote.trim().equals("")) {
                         operate.insert(newnote, t1);
