@@ -21,7 +21,7 @@ import zhj.notetaking.db_helper.DataBaseHelper;
 import zhj.notetaking.db_helper.Operate;
 
 
-public class AddActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.delete)
     TextView delete;
@@ -39,7 +39,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add);
         ButterKnife.bind(this);
 

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">记笔记</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add">AddActivity</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="title_left_item1">笔记本</string>
+    <string name="title_left_item2">BaseActivity</string>
+    <string name="ssdk_instapager_login_html">BaseActivity</string>
+
+
+</resources>
