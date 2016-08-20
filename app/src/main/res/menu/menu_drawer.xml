@@ -12,11 +12,11 @@
                 <!--android:checkable="true"-->
                 <!--android:icon="@mipmap/ic_help_grey600_24dp"-->
                 <!--android:title="提示"/>-->
-            <!--<item-->
-                <!--android:id="@+id/navigation_item3"-->
-                <!--android:checkable="true"-->
-                <!--android:icon="@mipmap/ic_settings_grey600_24dp"-->
-                <!--android:title="设置"/>-->
+            <item
+                android:id="@+id/navigation_item3"
+                android:checkable="true"
+                android:icon="@mipmap/ic_settings_grey600_24dp"
+                android:title="设置"/>
         </group>
         <item
             android:id="@+id/navigation_sub"

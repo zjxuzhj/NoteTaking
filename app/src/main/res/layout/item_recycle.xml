@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="time"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textSize="15sp"/>
+            android:textSize="13sp"/>
 
         <View
             android:layout_width="match_parent"

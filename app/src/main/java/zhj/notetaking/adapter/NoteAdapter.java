@@ -2,6 +2,7 @@ package zhj.notetaking.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import zhj.notetaking.R;
+import zhj.notetaking.data.NoteInfo;
+import zhj.notetaking.listener.ISearchAdapter;
 import zhj.notetaking.listener.ItemClickListener;
 import zhj.notetaking.listener.ItemLongClickListener;
 
@@ -30,8 +33,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     /**
      * 笔记集合
      */
-    private List<Map<String, String>> data_list;
-
+    private List<NoteInfo> data_list;
+    /** 适配器类型 */
+    private AdapterType type = AdapterType.NOTE_TYPE;
+    ISearchAdapter data;
     /**
      * 条目点击事件
      */
@@ -52,6 +57,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     }
 
     /**
+     * 设置数据和数据类型
+     * @param type 类型
+     * @param data 数据
+     */
+    public void setDataAndType(AdapterType type, ISearchAdapter data) {
+        this.type = type;
+        this.data = data;
+    }
+
+
+    /**
      * 设置长按监听器
      *
      * @param mItemLongClickListener 监听器
@@ -60,19 +76,29 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         this.mItemLongClickListener = mItemLongClickListener;
     }
 
-    public NoteAdapter(Context context, List<Map<String, String>> data_list) {
+    public NoteAdapter(Context context, List<NoteInfo> data_list) {
         this.mContext = context;
 
-        this.data_list = data_list;
+        // 默认
+        setDataAndType(AdapterType.NOTE_TYPE, null);
+        getNoteInfos( data_list);
 
     }
+
     /**
      * 获取笔记
      */
-    public void getNoteInfos(List<Map<String, String>> data_list) {
-        this.data_list = data_list;
-    }
+    public void getNoteInfos(List<NoteInfo> data_list) {
 
+        switch (type) {
+            case NOTE_TYPE:
+                this.data_list = data_list;
+                break;
+            case SEARCH_TYPE:
+                this.data_list = data.get();
+                break;
+        }
+    }
     @Override
     public NoteAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle, parent, false);
@@ -82,14 +108,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Map<String, String> data = data_list.get(position);
-        Set<String> set = data.keySet();
-        Iterator<String> it = set.iterator();
-        if (it.hasNext()) {
-            String text = it.next();
-            holder.noteText.setText(data.get(it.next()));
-            holder.noteTime.setText(data.get(text));
-        }
+
+        NoteInfo info = data_list.get(position);
+        holder.noteText.setText(info.getNote());
+        holder.noteTime.setText(info.getTime());
 
 
     }

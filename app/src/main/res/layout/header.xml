@@ -11,17 +11,17 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@mipmap/ic_launcher"/>
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/icon_pic"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="25dp"
         android:layout_marginTop="20dp"
-        android:text="测试账号"
+        android:text="用记录来证明存在"
         android:textColor="@android:color/white"
         android:textSize="16sp"/>
 </RelativeLayout>

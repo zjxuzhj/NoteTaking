@@ -16,6 +16,7 @@ public class BaseActivity extends AppCompatActivity {
     protected boolean isStartAnim = true;
     protected boolean isCloseAnim = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

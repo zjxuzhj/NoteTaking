@@ -8,11 +8,10 @@
         android:title="@string/action_settings"
         android:icon="@mipmap/ic_gridview_white"
         app:showAsAction="always" />
-    <!--<item android:id="@+id/search"-->
-          <!--android:title="search"-->
-          <!--android:icon="@mipmap/serch"-->
-
-          <!--app:actionViewClass="android.support.v7.widget.SearchView"-->
-          <!--app:showAsAction="collapseActionView|ifRoom"-->
-          <!--android:actionViewClass="android.widget.SearchView" />-->
+    <item android:id="@+id/search"
+          android:title="search"
+          android:icon="@mipmap/search"
+          app:actionViewClass="android.support.v7.widget.SearchView"
+          app:showAsAction="collapseActionView|ifRoom"
+          android:actionViewClass="android.widget.SearchView" />
 </menu>
