@@ -8,8 +8,6 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-
-
     <android.support.v4.widget.DrawerLayout
 
         android:id="@+id/drawerLayout"

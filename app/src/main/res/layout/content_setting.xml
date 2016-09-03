@@ -20,7 +20,7 @@
         android:layout_marginTop="8dp"
         android:lines="1"
         android:text="常规"
-        android:textColor="@color/colorAccent"
+        android:textColor="?attr/colorAccent"
         android:textSize="14sp"/>
 
     <RelativeLayout
@@ -79,7 +79,7 @@
         android:background="@color/divider"/>
 
     <RelativeLayout
-        android:id="@+id/rel_clear_cache"
+        android:id="@+id/rel_copy_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_list"
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:text="自动备份到本地"
+            android:text="点击备份到本地"
             android:textColor="@color/primary_text"
             android:textSize="16sp"/>
 
@@ -135,7 +135,7 @@
         android:layout_marginTop="24dp"
         android:lines="1"
         android:text="其他"
-        android:textColor="@color/colorAccent"
+        android:textColor="?attr/colorAccent"
         android:textSize="14sp"/>
 
     <TextView

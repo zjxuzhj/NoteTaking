@@ -7,5 +7,88 @@
     <string name="title_left_item2">BaseActivity</string>
     <string name="ssdk_instapager_login_html">BaseActivity</string>
 
-
+    <string name="app_desc">Succinct Notes, Simple Notepad Application</string>
+    <string name="setting">Setting</string>
+    <string name="bind_ever_note">Bind EverNote</string>
+    <string name="unbind_ever_note">Unbind EverNote</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="search">Search</string>
+    <string name="more">More</string>
+    <string name="general_settings">General Settings</string>
+    <string name="other">Other</string>
+    <string name="advice_feedback">Advice Feedback</string>
+    <string name="give_favor">Give favor</string>
+    <string name="sync">Sync</string>
+    <array name="drawer_content">
+        <item>SNotes</item>
+        <item>Trash</item>
+    </array>
+    <string name="note_log_text" formatted="false">%s\u0020:\u0020%s</string>
+    <string name="edit">Edit</string>
+    <string name="trash">Trash</string>
+    <string name="delete">Delete</string>
+    <string name="sure">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_tip">Are you want to delete this note from local</string>
+    <string name="done">Done</string>
+    <string name="label">Label</string>
+    <string name="note_content">content</string>
+    <string name="new_note">New Note</string>
+    <string name="search_note">Search</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="view_note">View Note</string>
+    <string name="show_note_history_log_key">show_note_history_log_key</string>
+    <string name="right_hand_mode_key">right_hand_mode_key</string>
+    <string name="move_success">Remove Success</string>
+    <string name="recover">Recover</string>
+    <string name="create">Create</string>
+    <string name="advice_feedback_key">advice_feedback_key</string>
+    <string name="no_email_app_tip">Please install email app first or send email to lgpszu@163.com directly</string>
+    <string name="sync_account_key">sync_account_key</string>
+    <string name="sync_success">Sync success</string>
+    <string name="sync_fail">Sync fail</string>
+    <string name="pay_for_me_title">Pay For Me</string>
+    <string name="jianshu_blog">Jianshu Blog</string>
+    <string name="project_home">Project Home</string>
+    <string name="pay_for_me_tip">If you think the SuccinctNotes useful to you, please feel free to reward.</string>
+    <string name="pay_for_me">Pay</string>
+    <string name="pay_for_me_key">pay_for_me_key</string>
+    <string name="recycle_bin">Trash</string>
+    <string name="give_favor_key">give_favor_key</string>
+    <string name="card_note_item_layout">Card View Notes</string>
+    <string name="card_note_item_layout_key">card_note_item_layout_key</string>
+    <string name="not_save_note_leave_tip">Note have changed, are you want to leave this page without saving the notes</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="change_theme_key">change_theme_key</string>
+    <string name="before_hour" formatted="false">%d\u0020 hours ago</string>
+    <string name="before_day" formatted="false">%d\u0020 days ago</string>
+    <string name="before_month" formatted="false">%d\u0020 months ago</string>
+    <string name="before_year" formatted="false">%d\u0020 years ago</string>
+    <string name="share_text" formatted="false">Succinct notes, simple and easy to use, recommend you to use %s\u0020%s</string>
+    <string name="download_url" >Download url</string>
+    <string name="share">Share</string>
+    <string name="not_install_app">Install corresponding app first</string>
+    <array name="share_dialog_text">
+        <item>Wechat Friends</item>
+        <item>Wechat Moments</item>
+        <item>Wechat Favorite</item>
+        <item>Sina Weibo</item>
+        <item>More</item>
+    </array>
+    <string name="frequent_api_tip">Try again later</string>
+    <string name="view">View</string>
+    <string name="last_update">Last update</string>
+    <string name="error_auth_expired_tip">Auth error，please auth again</string>
+    <string name="error_permission_deny">Permission Deny</string>
+    <string name="error_quota_reached">Quota reached error</string>
+    <string name="title">time</string>
+    <string name="backup_local_key">backup_local_key</string>
+    <string name="backup_local_summary">Backup notes to SDCard /SNote/notes.txt</string>
+    <string name="backup_local">Backup Local</string>
+    <string name="backup_local_done">Backup done</string>
+    <string name="backup_local_fail">Backup fail</string>
+    <string name="just_now">just now</string>
+    <string name="before_half_hour">a half of hour ago</string>
+    <string name="default_label">No Title</string>
 </resources>

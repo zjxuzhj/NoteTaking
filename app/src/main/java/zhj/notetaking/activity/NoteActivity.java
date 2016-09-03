@@ -21,17 +21,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,6 +45,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import zhj.notetaking.R;
 import zhj.notetaking.adapter.AdapterType;
+import zhj.notetaking.adapter.ColorsListAdapter;
 import zhj.notetaking.adapter.NoteAdapter;
 import zhj.notetaking.data.NoteInfo;
 import zhj.notetaking.db_helper.DataBaseHelper;
@@ -47,7 +53,10 @@ import zhj.notetaking.db_helper.Operate;
 import zhj.notetaking.listener.ISearchAdapter;
 import zhj.notetaking.listener.ItemClickListener;
 import zhj.notetaking.listener.ItemLongClickListener;
+import zhj.notetaking.utils.DialogUtils;
+import zhj.notetaking.utils.FileUtils;
 import zhj.notetaking.utils.PrefUtils;
+import zhj.notetaking.utils.ThemeUtils;
 
 
 public class NoteActivity extends BaseActivity implements View.OnClickListener {
@@ -83,9 +92,9 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     CoordinatorLayout mClCoor;
     @BindView(R.id.tv_about)
     TextView mTvAbout;
-    /**
-     * 搜索
-     */
+    @BindView(R.id.rel_copy_note)
+    RelativeLayout mRelCopyNote;
+
     private SearchView mSearchView;
     private ActionBarDrawerToggle mDrawerToggle;
     // RV的LayoutManager
@@ -99,7 +108,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     private boolean isSingle = false;
     //侧滑栏在左边还是右边
     private int gravity = Gravity.LEFT;
-
+    private  FileUtils mFileUtils;
 
     private List<NoteInfo> data_list = new ArrayList<>();
 
@@ -123,7 +132,6 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_note);
         ButterKnife.bind(this);
 
@@ -131,8 +139,6 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         data_list = operate.getAll();
         setupNoteAdapter();
         Reflesh();
-
-
     }
 
 
@@ -210,7 +216,6 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(intent);
                 finish();
 
-
             }
 
         });
@@ -251,6 +256,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         mLlIsRight.setOnClickListener(this);
         mChangeTheme.setOnClickListener(this);
         mTvAbout.setOnClickListener(this);
+        mRelCopyNote.setOnClickListener(this);
         but.setOnClickListener(this);
         helper = new DataBaseHelper(NoteActivity.this);
         operate = new Operate(helper.getReadableDatabase());
@@ -386,7 +392,6 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     //点击进入笔记
     @Override
     public void onClick(View v) {
-//        System.out.println("id:"+v.getId());
         switch (v.getId()) {
             case R.id.giveLove:
                 giveFavor();
@@ -408,12 +413,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.change_Theme:
-                Snackbar.make(mClCoor, "下版本更新,敬请期待。", Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                }).show();
+                //展示主题颜色选择对话框
+                showThemeChooseDialog();
                 break;
             case R.id.fab:
                 Intent it = new Intent(NoteActivity.this, AddActivity.class);
@@ -422,16 +423,56 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.tv_about:
-                Snackbar.make(mClCoor, "侧滑栏有啊亲，我是占位置的。", Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener() {
+                Snackbar.make(mClCoor, "侧滑栏有啊亲，我是占位置的。", Snackbar.LENGTH_SHORT)
+                        .setAction("确定", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                     }
                 }).show();
+                break;
+            case R.id.rel_copy_note:
+                backupLocal();
+                break;
         }
 
     }
+    //展示主题配色对话框
+    public void showThemeChooseDialog(){
+        AlertDialog.Builder builder = DialogUtils.makeDialogBuilder(NoteActivity.this);
+        builder.setTitle(R.string.change_theme);
+        Integer[] res = new Integer[]{R.drawable.blue_mix_red_round,R.drawable.pink_mix_yellow_round,
+                R.drawable.green_mix_red_round,R.drawable.brown_mix_grey_round,
+                R.drawable.red_round, R.drawable.brown_round, R.drawable.blue_round,
+                R.drawable.blue_grey_round, R.drawable.yellow_round, R.drawable.deep_purple_round,
+                R.drawable.pink_round, R.drawable.green_round};
+        List<Integer> list = Arrays.asList(res);
+        ColorsListAdapter adapter = new ColorsListAdapter(NoteActivity.this, list);
+        adapter.setCheckItem(ThemeUtils.getCurrentTheme(NoteActivity.this).getIntValue());
+        GridView gridView = (GridView) LayoutInflater.from(NoteActivity.this).inflate(R.layout.colors_panel_layout, null);
+        gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        gridView.setCacheColorHint(0);
+        gridView.setAdapter(adapter);
+        builder.setView(gridView);
+        final AlertDialog dialog = builder.show();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                dialog.dismiss();
+                onThemeChoose(i);
+                Log.d("po", "onItemClick: "+i+":"+ThemeUtils.getCurrentTheme(NoteActivity.this).getIntValue()
+                +":"+PrefUtils.getInt(NoteActivity.this,"change_theme_key",0x00 ));
 
+            }
+        });
+    }
+    public void onThemeChoose(int position) {
+        int value = ThemeUtils.getCurrentTheme(NoteActivity.this).getIntValue();
+        if (value != position) {
+                PrefUtils.putInt(NoteActivity.this,"change_theme_key",position);
+            reload(true);
+        }
+    }
     //通过邮件反馈建议和意见
     private void feedback() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -456,6 +497,20 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    //备份笔记
+    private void backupLocal(){
+        mFileUtils=new FileUtils();
+        mFileUtils.backupNotes(this,data_list);
+        Snackbar.make(mClCoor, "备份完成", Snackbar.LENGTH_SHORT)
+                .setAction("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+
     }
 
     //对回退键的处理
