@@ -15,15 +15,7 @@
 优化了代码逻辑
 
 
-![
-![Screenshot_20160820-005033.png](http://upload-images.jianshu.io/upload_images/1877523-37296716f2d3784e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-](http://upload-images.jianshu.io/upload_images/1877523-df3919a36854b312.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/12
-![
-![
-![Screenshot_20160820-005105.png](http://upload-images.jianshu.io/upload_images/1877523-4c557aab885252f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-](http://upload-images.jianshu.io/upload_images/1877523-4578720337daea12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-](http://upload-images.jianshu.io/upload_images/1877523-2651cd3db35646eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-40)  
+
 ![Screenshot_20160802-160639.png](http://upload-images.jianshu.io/upload_images/1877523-4c9b7b58aafc13bd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![Screenshot_20160802-160708.png](http://upload-images.jianshu.io/upload_images/1877523-92826d9283522b50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
