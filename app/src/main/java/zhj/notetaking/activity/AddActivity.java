@@ -56,9 +56,7 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
     //实例化组件
     private void InitView() {
 
-
         save.setOnClickListener(this);
-
 
         delete.setOnClickListener(this);
 
@@ -69,31 +67,7 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.save:
-                operate = new Operate(helper.getWritableDatabase());
-                String newnote = edit.getText().toString();
-
-                long time = System.currentTimeMillis();
-                SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm:ss");
-                Date d1 = new Date(time);
-                String t1 = format.format(d1);
-
-                Intent it = new Intent(AddActivity.this, NoteActivity.class);
-
-
-                if (which.equals("1")) {                //执行插入操作
-                    if (!newnote.equals("") || !newnote.trim().equals("")) {
-                        operate.insert(newnote, t1);
-                        startActivity(it);
-                        finish();
-                    } else {
-                        startActivity(it);
-                        finish();
-                    }
-                } else {                                //执行修改操作
-                    operate.update(note, newnote, t1);
-                    startActivity(it);
-                    finish();
-                }
+                saveNote();
                 break;
             case R.id.delete:
                 startActivity(new Intent(AddActivity.this, NoteActivity.class));
@@ -102,8 +76,38 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void saveNote() {
+        operate = new Operate(helper.getWritableDatabase());
+        String newnote = edit.getText().toString();
+
+        long time = System.currentTimeMillis();
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm:ss");
+        Date d1 = new Date(time);
+        String t1 = format.format(d1);
+
+        Intent it = new Intent(AddActivity.this, NoteActivity.class);
+
+
+        if (which.equals("1")) {                //执行插入操作
+            if (!newnote.equals("") || !newnote.trim().equals("")) {
+                operate.insert(newnote, t1);
+                startActivity(it);
+                finish();
+            } else {
+                startActivity(it);
+                finish();
+            }
+        } else {                                //执行修改操作
+            operate.update(note, newnote, t1);
+            startActivity(it);
+            finish();
+        }
+    }
+
     @Override
     public void onBackPressed() {
+        //通过回退键退回时保存数据
+        saveNote();
         startActivity(new Intent(AddActivity.this, NoteActivity.class));
         finish();
     }

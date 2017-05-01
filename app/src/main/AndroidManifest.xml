@@ -51,6 +51,8 @@
 
         <activity android:name=".activity.BaseActivity"/>
         <activity android:name=".activity.SettingActivity"/>
+        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.SignupActivity"/>
         <!-- shareSDK -->
         <activity
             android:name="com.mob.tools.MobUIShell"

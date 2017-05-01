@@ -14,6 +14,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.transition.Visibility;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -41,8 +42,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bmob.v3.Bmob;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
+import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.adapter.AdapterType;
 import zhj.notetaking.adapter.ColorsListAdapter;
@@ -108,7 +111,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     private boolean isSingle = false;
     //侧滑栏在左边还是右边
     private int gravity = Gravity.LEFT;
-    private  FileUtils mFileUtils;
+    private FileUtils mFileUtils;
 
     private List<NoteInfo> data_list = new ArrayList<>();
 
@@ -127,11 +130,13 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             }
         }
     };
+    private MenuItem mItemChange,mItemSearch;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bmob.initialize(this, "9a694364df25c39dd2772b75b88b6935");
         setContentView(R.layout.activity_note);
         ButterKnife.bind(this);
 
@@ -206,7 +211,6 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
 
         noteAdapter.setItemClickListener(new ItemClickListener() {
 
-
             @Override
             public void onItemClick(NoteInfo info) {
                 Intent intent = new Intent(NoteActivity.this, AddActivity.class);
@@ -215,7 +219,6 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 intent.putExtra("which", "2");
                 startActivity(intent);
                 finish();
-
             }
 
         });
@@ -251,6 +254,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
 
     //实例化组件
     private void InitView() {
+
         mFeedback.setOnClickListener(this);
         mGiveLove.setOnClickListener(this);
         mLlIsRight.setOnClickListener(this);
@@ -310,6 +314,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 switch (item.getItemId()) {
                     case R.id.navigation_item1:
                         mToolBar.setTitle("记笔记");
+                        mItemChange.setVisible(true);
+                        mItemSearch.setVisible(true);
                         mRlAbout.setVisibility(View.INVISIBLE);
                         noteRecycle.setVisibility(View.VISIBLE);
                         mContentSetting.setVisibility(View.INVISIBLE);
@@ -323,6 +329,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                     case R.id.navigation_item3:
                         //读取isRight的属性值
                         mToolBar.setTitle("设置");
+                        mItemChange.setVisible(false);
+                        mItemSearch.setVisible(false);
                         mCheckBox.setChecked(PrefUtils.getBoolean(NoteActivity.this, "isRight", false));
                         noteRecycle.setVisibility(View.INVISIBLE);
                         mContentSetting.setVisibility(View.VISIBLE);
@@ -330,15 +338,21 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                         break;
                     case R.id.navigation_sub_item1:
                         mToolBar.setTitle("关于");
+                        mItemChange.setVisible(false);
+                        mItemSearch.setVisible(false);
                         item.setChecked(true);
                         noteRecycle.setVisibility(View.INVISIBLE);
                         mContentSetting.setVisibility(View.INVISIBLE);
                         mRlAbout.setVisibility(View.VISIBLE);
                         break;
                     case R.id.navigation_sub_item2:
+                        mItemChange.setVisible(false);
+                        mItemSearch.setVisible(false);
                         feedback();
                         break;
                     case R.id.navigation_sub_item3:
+                        mItemChange.setVisible(false);
+                        mItemSearch.setVisible(false);
                         item.setChecked(false);
                         showShare();
 
@@ -425,11 +439,11 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             case R.id.tv_about:
                 Snackbar.make(mClCoor, "侧滑栏有啊亲，我是占位置的。", Snackbar.LENGTH_SHORT)
                         .setAction("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                            @Override
+                            public void onClick(View view) {
 
-                    }
-                }).show();
+                            }
+                        }).show();
                 break;
             case R.id.rel_copy_note:
                 backupLocal();
@@ -437,12 +451,13 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         }
 
     }
+
     //展示主题配色对话框
-    public void showThemeChooseDialog(){
+    public void showThemeChooseDialog() {
         AlertDialog.Builder builder = DialogUtils.makeDialogBuilder(NoteActivity.this);
         builder.setTitle(R.string.change_theme);
-        Integer[] res = new Integer[]{R.drawable.blue_mix_red_round,R.drawable.pink_mix_yellow_round,
-                R.drawable.green_mix_red_round,R.drawable.brown_mix_grey_round,
+        Integer[] res = new Integer[]{R.drawable.blue_mix_red_round, R.drawable.pink_mix_yellow_round,
+                R.drawable.green_mix_red_round, R.drawable.brown_mix_grey_round,
                 R.drawable.red_round, R.drawable.brown_round, R.drawable.blue_round,
                 R.drawable.blue_grey_round, R.drawable.yellow_round, R.drawable.deep_purple_round,
                 R.drawable.pink_round, R.drawable.green_round};
@@ -460,19 +475,21 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dialog.dismiss();
                 onThemeChoose(i);
-                Log.d("po", "onItemClick: "+i+":"+ThemeUtils.getCurrentTheme(NoteActivity.this).getIntValue()
-                +":"+PrefUtils.getInt(NoteActivity.this,"change_theme_key",0x00 ));
+                Log.d("po", "onItemClick: " + i + ":" + ThemeUtils.getCurrentTheme(NoteActivity.this).getIntValue()
+                        + ":" + PrefUtils.getInt(NoteActivity.this, "change_theme_key", 0x00));
 
             }
         });
     }
+
     public void onThemeChoose(int position) {
         int value = ThemeUtils.getCurrentTheme(NoteActivity.this).getIntValue();
         if (value != position) {
-                PrefUtils.putInt(NoteActivity.this,"change_theme_key",position);
+            PrefUtils.putInt(NoteActivity.this, "change_theme_key", position);
             reload(true);
         }
     }
+
     //通过邮件反馈建议和意见
     private void feedback() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -482,7 +499,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(NoteActivity.this, "您的手机无法发送邮件反馈！", Toast.LENGTH_LONG).show();
+            Toasty.warning(NoteActivity.this, "您的手机无法发送邮件反馈！", Toast.LENGTH_SHORT, true).show();
         }
 
     }
@@ -500,9 +517,9 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     }
 
     //备份笔记
-    private void backupLocal(){
-        mFileUtils=new FileUtils();
-        mFileUtils.backupNotes(this,data_list);
+    private void backupLocal() {
+        mFileUtils = new FileUtils();
+        mFileUtils.backupNotes(this, data_list);
         Snackbar.make(mClCoor, "备份完成", Snackbar.LENGTH_SHORT)
                 .setAction("确定", new View.OnClickListener() {
                     @Override
@@ -522,7 +539,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             return;
         }
         if ((System.currentTimeMillis() - current_time) > 2000) {
-            Toast.makeText(NoteActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            Toasty.warning(NoteActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT, true).show();
             current_time = System.currentTimeMillis();
         } else {
             finish();
@@ -530,11 +547,12 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    //设置foolbar的菜单栏
+    //设置toolbar的菜单栏
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_note, menu);
-
+        mItemChange = menu.findItem(R.id.action_change);
+        mItemSearch = menu.findItem(R.id.search);
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
@@ -549,27 +567,27 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     private void showShare() {
         ShareSDK.initSDK(this);
         OnekeyShare oks = new OnekeyShare();
-//关闭sso授权
+        //关闭sso授权
         oks.disableSSOWhenAuthorize();
 
-// title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
         oks.setTitle("分享");
-// titleUrl是标题的网络链接，QQ和QQ空间等使用
+        // titleUrl是标题的网络链接，QQ和QQ空间等使用
         oks.setTitleUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
-// text是分享文本，所有平台都需要这个字段
+        // text是分享文本，所有平台都需要这个字段
         oks.setText("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
-// imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-//oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-// url仅在微信（包括好友和朋友圈）中使用
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
         oks.setUrl("http://sharesdk.cn");
-// comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
         oks.setComment("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
-// site是分享此内容的网站名称，仅在QQ空间使用
+        // site是分享此内容的网站名称，仅在QQ空间使用
         oks.setSite(getString(R.string.app_name));
-// siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
         oks.setSiteUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
 
-// 启动分享GUI
+        // 启动分享GUI
         oks.show(this);
     }
 

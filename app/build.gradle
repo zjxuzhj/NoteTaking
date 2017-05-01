@@ -4,7 +4,7 @@ apply plugin: 'android-apt'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
-
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "zhj.notetaking"
         minSdkVersion 15
@@ -24,7 +24,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:design:24.0.0'
     compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.umeng.analytics:analytics:6.0.1'
     compile 'com.jakewharton:butterknife:8.2.1'
@@ -40,4 +39,10 @@ dependencies {
     compile files('libs/ShareSDK-ShortMessage-2.7.4.jar')
     compile files('libs/ShareSDK-SinaWeibo-2.7.4.jar')
     compile files('libs/ShareSDK-Twitter-2.7.4.jar')
+    //以下SDK开发者请根据需要自行选择
+    //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务，以下是最新的bmob-sdk:
+    //3.5.0：请务必查看下面注释[1]
+    compile 'cn.bmob.android:bmob-sdk:3.5.0'
+    compile 'com.github.GrenderG:Toasty:1.2.3'
+    compile 'com.android.support:design:26.0.0-alpha1'
 }
