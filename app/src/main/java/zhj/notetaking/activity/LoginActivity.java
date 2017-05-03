@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
+import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.domain.User;
 
@@ -53,20 +54,20 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-//                login();
+                login();
 
-                BmobUser.loginByAccount("admin", "123456", new LogInListener<User>() {
-
-                    @Override
-                    public void done(User user, BmobException e) {
-                        if (user != null) {
-                            Log.i("smile", "用户登陆成功");
-                            onLoginSuccess();
-                        } else {
-                            Log.i("smile", "用户登陆失败");
-                        }
-                    }
-                });
+//                BmobUser.loginByAccount("admin", "123456", new LogInListener<User>() {
+//
+//                    @Override
+//                    public void done(User user, BmobException e) {
+//                        if (user != null) {
+//                            Log.i("smile", "用户登陆成功");
+//                            onLoginSuccess();
+//                        } else {
+//                            Log.i("smile", "用户登陆失败");
+//                        }
+//                    }
+//                });
             }
         });
 
@@ -97,7 +98,7 @@ public class LoginActivity extends BaseActivity {
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("登录中...");
         progressDialog.show();
 
         String userStr = _emailText.getText().toString();
@@ -112,7 +113,10 @@ public class LoginActivity extends BaseActivity {
                     onLoginSuccess();
                     progressDialog.dismiss();
                 } else {
+                    progressDialog.dismiss();
+                    _loginButton.setEnabled(true);
                     Log.i("smile", "用户登陆失败");
+                    Toasty.error(LoginActivity.this, "登录失败，请检查用户名和密码", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -132,11 +136,11 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        // Disable going back to the MainActivity
-//        moveTaskToBack(true);
-//    }
+    @Override
+    public void onBackPressed() {
+        // Disable going back to the MainActivity
+        moveTaskToBack(true);
+    }
 
     public void onLoginSuccess() {
         mUserInfo = BmobUser.getCurrentUser(User.class);
@@ -146,8 +150,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "登陆失败！", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
     }
 
@@ -158,14 +160,16 @@ public class LoginActivity extends BaseActivity {
         String password = _passwordText.getText().toString();
 
         if (email.isEmpty() || email.length() < 3) {
-            _emailText.setError("至少三个字符");
+            Toasty.warning(getBaseContext(),"用户名至少三个字符",Toast.LENGTH_SHORT).show();
+//            _emailText.setError("至少三个字符");
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("密码长度大于四，小于十");
+            Toasty.warning(getBaseContext(),"密码长度大于四，小于十",Toast.LENGTH_SHORT).show();
+//            _passwordText.setError("密码长度大于四，小于十");
             valid = false;
         } else {
             _passwordText.setError(null);

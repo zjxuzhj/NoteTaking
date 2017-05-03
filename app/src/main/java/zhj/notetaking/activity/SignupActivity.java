@@ -16,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.domain.User;
 
@@ -27,7 +28,7 @@ import static android.R.attr.password;
  */
 public class SignupActivity extends BaseActivity {
     private static final String TAG = "SignupActivity";
-
+    public static final int LOGIN_OK=2;
     @BindView(R.id.input_name)
     EditText _nameText;
     @BindView(R.id.input_password)
@@ -79,20 +80,20 @@ public class SignupActivity extends BaseActivity {
         final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        progressDialog.setMessage("创建中...");
         progressDialog.show();
 
         String name = _nameText.getText().toString();
         String password = _passwordText.getText().toString();
 
         User user = new User();
-//        user.setUsername(name);
-//        user.setPassword(password);
+        user.setUsername(name);
+        user.setPassword(password);
         user.signUp(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(SignupActivity.this, "账号创建成功：", Toast.LENGTH_SHORT).show();
+                    Toasty.success(SignupActivity.this, "账号创建成功,请登录", Toast.LENGTH_SHORT).show();
                     // On complete call either onSignupSuccess or onSignupFailed
                     // depending on success
                     onSignupSuccess();
@@ -100,7 +101,7 @@ public class SignupActivity extends BaseActivity {
                     progressDialog.dismiss();
                 } else {
                     if (e.getMessage().contains("IllegalStateException")) {
-                        Toast.makeText(SignupActivity.this, "账号创建成功：", Toast.LENGTH_SHORT).show();
+                        Toasty.success(SignupActivity.this, "账号创建成功,请登录", Toast.LENGTH_SHORT).show();
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
                         onSignupSuccess();
@@ -108,8 +109,14 @@ public class SignupActivity extends BaseActivity {
                         progressDialog.dismiss();
                         return;
                     } else {
-                        Toast.makeText(SignupActivity.this, "失败：" + e.getMessage() + "," + e.getErrorCode(), Toast.LENGTH_SHORT).show();
                         Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
+                        if(e.getMessage().contains("already taken")){
+                            Toasty.error(SignupActivity.this, "用户名已被占用！", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toasty.error(SignupActivity.this, "失败：" + e.getMessage() + "," + e.getErrorCode(), Toast.LENGTH_SHORT).show();
+                        }
+                        progressDialog.dismiss();
+                        _signupButton.setEnabled(true);
                     }
                 }
             }
@@ -119,12 +126,11 @@ public class SignupActivity extends BaseActivity {
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-        setResult(2, null);
+        setResult(LOGIN_OK, null);
         finish();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 
@@ -136,21 +142,24 @@ public class SignupActivity extends BaseActivity {
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("至少三个字符");
+//            _nameText.setError("至少三个字符");
+            Toasty.warning(getBaseContext(),"用户名至少三个字符",Toast.LENGTH_SHORT).show();
             valid = false;
         } else {
             _nameText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("密码长度大于四，小于十");
+            Toasty.warning(getBaseContext(),"密码长度大于四，小于十",Toast.LENGTH_SHORT).show();
+//            _passwordText.setError("密码长度大于四，小于十");
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("两次密码不相同");
+//            _reEnterPasswordText.setError("两次密码不相同");
+            Toasty.warning(getBaseContext(),"两次密码不相同",Toast.LENGTH_SHORT).show();
             valid = false;
         } else {
             _reEnterPasswordText.setError(null);
