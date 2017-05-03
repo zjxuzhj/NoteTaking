@@ -25,7 +25,8 @@ import zhj.notetaking.domain.User;
 /**
  * 登陆页面
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
+    public static final int LOGIN_OK=2;
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     @BindView(R.id.input_email)
@@ -38,9 +39,13 @@ public class LoginActivity extends AppCompatActivity {
     TextView _signupLink;
     private User mUserInfo;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setStartAnim(false);
+        setCloseAnim(false);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
@@ -136,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         mUserInfo = BmobUser.getCurrentUser(User.class);
         _loginButton.setEnabled(true);
-        setResult(2, null);
+        setResult(LOGIN_OK, null);
         finish();
     }
 

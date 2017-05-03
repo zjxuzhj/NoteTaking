@@ -98,7 +98,61 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="24dp"
+            android:lines="1"
+            android:text="同步"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"/>
 
+        <TextView
+            android:id="@+id/tv_sync_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="点击立即同步"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
+        <RelativeLayout
+            android:id="@+id/rel_sync_timeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="16dp">
+        <TextView
+            android:id="@+id/tv_sync_time_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:text="最后同步时间"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv_sync_timeline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="2017-05-03 22:30"
+                android:textColor="@color/secondary_text"
+                android:textSize="14sp"/>
+        </RelativeLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

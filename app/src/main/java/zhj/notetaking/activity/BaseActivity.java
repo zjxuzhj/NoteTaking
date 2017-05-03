@@ -17,6 +17,15 @@ import zhj.notetaking.utils.ThemeUtils;
 public class BaseActivity extends AppCompatActivity {
     public final static String IS_START_ANIM = "IS_START_ANIM";
     public final static String IS_CLOSE_ANIM = "IS_CLOSE_ANIM";
+
+    public void setStartAnim(boolean startAnim) {
+        isStartAnim = startAnim;
+    }
+
+    public void setCloseAnim(boolean closeAnim) {
+        isCloseAnim = closeAnim;
+    }
+
     protected boolean isStartAnim = true;
     protected boolean isCloseAnim = true;
 

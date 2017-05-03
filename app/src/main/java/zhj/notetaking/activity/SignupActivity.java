@@ -19,17 +19,17 @@ import cn.bmob.v3.listener.SaveListener;
 import zhj.notetaking.R;
 import zhj.notetaking.domain.User;
 
+import static android.R.attr.password;
+
 
 /**
  * 注册页面
  */
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends BaseActivity {
     private static final String TAG = "SignupActivity";
 
     @BindView(R.id.input_name)
     EditText _nameText;
-    @BindView(R.id.input_address)
-    EditText _addressText;
     @BindView(R.id.input_password)
     EditText _passwordText;
     @BindView(R.id.input_reEnterPassword)
@@ -41,6 +41,8 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setStartAnim(false);
+        setCloseAnim(false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
@@ -81,7 +83,6 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.show();
 
         String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
         String password = _passwordText.getText().toString();
 
         User user = new User();
@@ -131,7 +132,6 @@ public class SignupActivity extends AppCompatActivity {
         boolean valid = true;
 
         String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
@@ -140,13 +140,6 @@ public class SignupActivity extends AppCompatActivity {
             valid = false;
         } else {
             _nameText.setError(null);
-        }
-
-        if (address.isEmpty()) {
-            _addressText.setError("当前地址为空");
-            valid = false;
-        } else {
-            _addressText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {

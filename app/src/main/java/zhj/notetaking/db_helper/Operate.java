@@ -19,9 +19,9 @@ public class Operate {
         this.db = db;
     }
 
-    public void insert(String note, String time) {
-        String sql = "insert into " + TABLEENAME + " (note,time) values(?,?)";
-        Object obj[] = new Object[]{note, time};
+    public void insert(String note, String time, String uuid1) {
+        String sql = "insert into " + TABLEENAME + " (note,time,uuid) values(?,?,?)";
+        Object obj[] = new Object[]{note, time,uuid1};
         this.db.execSQL(sql, obj);
         this.db.close();
     }
@@ -42,14 +42,16 @@ public class Operate {
 
     public List<NoteInfo> getAll() {
         List<NoteInfo> list = new ArrayList<>();
-        String sql = "select note,time from " + TABLEENAME;
+        String sql = "select note,time,uuid from " + TABLEENAME;
         Cursor cursor = this.db.rawQuery(sql, null);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String note = cursor.getString(0);
             String time = cursor.getString(1);
+            String uuid = cursor.getString(2);
             NoteInfo noteInfo = new NoteInfo();
             noteInfo.setNote(note);
             noteInfo.setTime(time);
+            noteInfo.setUuid(uuid);
             list.add(noteInfo);
         }
         this.db.close();

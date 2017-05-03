@@ -13,6 +13,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,12 +86,13 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
         Date d1 = new Date(time);
         String t1 = format.format(d1);
 
+        String uuid1 = UUID.randomUUID().toString();
         Intent it = new Intent(AddActivity.this, NoteActivity.class);
 
 
         if (which.equals("1")) {                //执行插入操作
             if (!newnote.equals("") || !newnote.trim().equals("")) {
-                operate.insert(newnote, t1);
+                operate.insert(newnote, t1,uuid1);
                 startActivity(it);
                 finish();
             } else {

@@ -1,12 +1,12 @@
-package zhj.notetaking.data;
+package zhj.notetaking.domain;
 
 import cn.bmob.v3.BmobObject;
-import zhj.notetaking.domain.User;
 
 /**
- * Created by HongJay on 2016/8/16.
+ * Created by HongJay on 2017/5/3.
  */
-public class NoteInfo extends BmobObject{
+
+public class Note extends BmobObject {
     private String note;
     private String time;
     private String uuid;
@@ -27,11 +27,6 @@ public class NoteInfo extends BmobObject{
         this.time = time;
     }
 
-    public NoteInfo() {
-        super();
-        this.setTableName("Note");
-    }
-
     public String getUuid() {
         return uuid;
     }
@@ -42,9 +37,5 @@ public class NoteInfo extends BmobObject{
 
     public String getUid() {
         return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 }
