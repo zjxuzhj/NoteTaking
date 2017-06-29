@@ -8,51 +8,14 @@ import cn.bmob.v3.BmobUser;
 
 public class User extends BmobUser {
 
-    public String getQq() {
-        return qq;
+
+    private String password_t;
+
+    public String getPassword_t() {
+        return password_t;
     }
 
-    public void setQq(String qq) {
-        this.qq = qq;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    private String qq;
-    private String tel;
-    private String address;
-
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
-    private Integer score;
-
-    private String city;
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
+    public void setPassword_t(String password_t) {
+        this.password_t = password_t;
     }
 }

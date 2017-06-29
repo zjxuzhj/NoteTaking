@@ -3,7 +3,6 @@ package zhj.notetaking.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,8 +18,8 @@ import cn.bmob.v3.listener.SaveListener;
 import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.domain.User;
-
-import static android.R.attr.password;
+import zhj.notetaking.utils.PrefUtils;
+import zhj.notetaking.utils.TimeUtils;
 
 
 /**
@@ -28,7 +27,7 @@ import static android.R.attr.password;
  */
 public class SignupActivity extends BaseActivity {
     private static final String TAG = "SignupActivity";
-    public static final int LOGIN_OK=2;
+    public static final int SIGNUP_OK =0;
     @BindView(R.id.input_name)
     EditText _nameText;
     @BindView(R.id.input_password)
@@ -62,7 +61,7 @@ public class SignupActivity extends BaseActivity {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                overridePendingTransition(R.anim.push_left_out,R.anim.push_left_in);
             }
         });
     }
@@ -83,27 +82,26 @@ public class SignupActivity extends BaseActivity {
         progressDialog.setMessage("创建中...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String name = _nameText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
         User user = new User();
         user.setUsername(name);
         user.setPassword(password);
+        user.setPassword_t(password);
         user.signUp(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
                     Toasty.success(SignupActivity.this, "账号创建成功,请登录", Toast.LENGTH_SHORT).show();
-                    // On complete call either onSignupSuccess or onSignupFailed
-                    // depending on success
                     onSignupSuccess();
                     // onSignupFailed();
                     progressDialog.dismiss();
                 } else {
                     if (e.getMessage().contains("IllegalStateException")) {
-                        Toasty.success(SignupActivity.this, "账号创建成功,请登录", Toast.LENGTH_SHORT).show();
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
+                        Toasty.success(SignupActivity.this, "账号创建成功", Toast.LENGTH_SHORT).show();
+                        PrefUtils.putString(getApplication(), "username", name);
+                        PrefUtils.putString(getApplication(), "password", password);
                         onSignupSuccess();
                         // onSignupFailed();
                         progressDialog.dismiss();
@@ -126,7 +124,7 @@ public class SignupActivity extends BaseActivity {
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-        setResult(LOGIN_OK, null);
+        setResult(SIGNUP_OK, null);
         finish();
     }
 

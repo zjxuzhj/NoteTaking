@@ -27,7 +27,7 @@ import zhj.notetaking.domain.User;
  * 登陆页面
  */
 public class LoginActivity extends BaseActivity {
-    public static final int LOGIN_OK=2;
+    public static final int LOGIN_OK=1;
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     @BindView(R.id.input_email)
