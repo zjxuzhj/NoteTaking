@@ -2,14 +2,10 @@ package zhj.notetaking.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
@@ -24,7 +20,7 @@ import zhj.notetaking.db_helper.Operate;
 
 
 public class AddActivity extends BaseActivity implements View.OnClickListener {
-
+    public static final int RESULT_SAVE_NOTE=3;
     @BindView(R.id.delete)
     TextView delete;
     @BindView(R.id.save)
@@ -48,7 +44,7 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
         intent = getIntent();
         note = intent.getStringExtra("text");
         which = intent.getStringExtra("which");
-
+        setResult(RESULT_SAVE_NOTE);
         if (which.equals("2")) {
             edit.setText(note);
         }
@@ -71,12 +67,14 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
                 saveNote();
                 break;
             case R.id.delete:
-                startActivity(new Intent(AddActivity.this, NoteActivity.class));
                 finish();
                 break;
         }
     }
 
+    /**
+     * 保存笔记对象到数据库
+     */
     private void saveNote() {
         operate = new Operate(helper.getWritableDatabase());
         String newnote = edit.getText().toString();
@@ -87,21 +85,16 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
         String t1 = format.format(d1);
 
         String uuid1 = UUID.randomUUID().toString();
-        Intent it = new Intent(AddActivity.this, NoteActivity.class);
-
 
         if (which.equals("1")) {                //执行插入操作
             if (!newnote.equals("") || !newnote.trim().equals("")) {
-                operate.insert(newnote, t1,uuid1);
-                startActivity(it);
+                operate.insert(newnote, t1, uuid1);
                 finish();
             } else {
-                startActivity(it);
                 finish();
             }
-        } else {                                //执行修改操作
+        } else {                                //执行修改操作,保存修改时间
             operate.update(note, newnote, t1);
-            startActivity(it);
             finish();
         }
     }
@@ -110,7 +103,6 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
     public void onBackPressed() {
         //通过回退键退回时保存数据
         saveNote();
-        startActivity(new Intent(AddActivity.this, NoteActivity.class));
         finish();
     }
 

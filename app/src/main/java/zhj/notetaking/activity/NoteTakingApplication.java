@@ -13,5 +13,6 @@ public class NoteTakingApplication extends Application {
     public void onCreate() {
         super.onCreate();
         CrashReport.initCrashReport(getApplicationContext(), "9c0413b88c", false);
+//        Stetho.initializeWithDefaults(this);
     }
 }

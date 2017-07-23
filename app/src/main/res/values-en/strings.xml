@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">记笔记</string>
-    <string name="action_settings">Settings</string>
     <string name="title_activity_add">AddActivity</string>
     <string name="title_activity_base">BaseActivity</string>
     <string name="title_left_item1">笔记本</string>
@@ -8,7 +7,6 @@
     <string name="ssdk_instapager_login_html">BaseActivity</string>
 
     <string name="app_desc">Succinct Notes, Simple Notepad Application</string>
-    <string name="setting">Setting</string>
     <string name="bind_ever_note">Bind EverNote</string>
     <string name="unbind_ever_note">Unbind EverNote</string>
     <string name="about">About</string>

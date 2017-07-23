@@ -26,9 +26,9 @@ public class Operate {
         this.db.close();
     }
 
-    public void update(String old_note, String note, String time) {
-        String sql = "update " + TABLEENAME + " set note=?,time=? where note=?";
-        Object obj[] = new Object[]{note, time, old_note};
+    public void update(String old_note, String note, String updateTime) {
+        String sql = "update " + TABLEENAME + " set note=?,updateTime=? where note=?";
+        Object obj[] = new Object[]{note, updateTime, old_note};
         this.db.execSQL(sql, obj);
         this.db.close();
     }
@@ -42,16 +42,23 @@ public class Operate {
 
     public List<NoteInfo> getAll() {
         List<NoteInfo> list = new ArrayList<>();
-        String sql = "select note,time,uuid from " + TABLEENAME;
+        String sql = "select note,time,uuid,updateTime,title,deleted from " + TABLEENAME;
         Cursor cursor = this.db.rawQuery(sql, null);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String note = cursor.getString(0);
             String time = cursor.getString(1);
             String uuid = cursor.getString(2);
+            String updateTime = cursor.getString(3);
+            String title = cursor.getString(4);
+            String deleted = cursor.getString(5);
             NoteInfo noteInfo = new NoteInfo();
             noteInfo.setNote(note);
             noteInfo.setTime(time);
             noteInfo.setUuid(uuid);
+            noteInfo.setUpdateTime(updateTime);
+            noteInfo.setTitle(title);
+            noteInfo.setDeleted(deleted);
+
             list.add(noteInfo);
         }
         this.db.close();

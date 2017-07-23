@@ -13,13 +13,14 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
 import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.domain.User;
 import zhj.notetaking.utils.PrefUtils;
-import zhj.notetaking.utils.TimeUtils;
 
 
 /**
@@ -93,16 +94,17 @@ public class SignupActivity extends BaseActivity {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    Toasty.success(SignupActivity.this, "账号创建成功,请登录", Toast.LENGTH_SHORT).show();
-                    onSignupSuccess();
+                    Toasty.success(SignupActivity.this, "账号创建成功", Toast.LENGTH_SHORT).show();
+                    onSignupSuccess(name,password);
                     // onSignupFailed();
                     progressDialog.dismiss();
                 } else {
+                    //提示错误问题。但其实也注册成功
                     if (e.getMessage().contains("IllegalStateException")) {
                         Toasty.success(SignupActivity.this, "账号创建成功", Toast.LENGTH_SHORT).show();
                         PrefUtils.putString(getApplication(), "username", name);
                         PrefUtils.putString(getApplication(), "password", password);
-                        onSignupSuccess();
+                        onSignupSuccess(name, password);
                         // onSignupFailed();
                         progressDialog.dismiss();
                         return;
@@ -122,8 +124,19 @@ public class SignupActivity extends BaseActivity {
     }
 
 
-    public void onSignupSuccess() {
+    public void onSignupSuccess(String name, String password) {
         _signupButton.setEnabled(true);
+        BmobUser.loginByAccount(name, password, new LogInListener<User>() {
+
+            @Override
+            public void done(User user, BmobException e) {
+                if (user != null) {
+                    Log.i("smile", "用户登陆成功");
+                } else {
+                    Log.i("smile", "用户登陆失败");
+                }
+            }
+        });
         setResult(SIGNUP_OK, null);
         finish();
     }

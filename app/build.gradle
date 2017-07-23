@@ -53,4 +53,6 @@ dependencies {
     compile 'com.github.GrenderG:Toasty:1.2.3'
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
+//    compile 'com.facebook.stetho:stetho:1.5.0'
+
 }
