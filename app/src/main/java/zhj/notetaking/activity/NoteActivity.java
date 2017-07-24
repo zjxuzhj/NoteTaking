@@ -42,7 +42,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +59,6 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.QueryListener;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.OnekeyShare;
 import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.adapter.AdapterType;
@@ -86,8 +83,8 @@ import static zhj.notetaking.activity.SignupActivity.SIGNUP_OK;
 public class NoteActivity extends BaseActivity implements View.OnClickListener {
     public static final int LOGIN_OK = 1;
     private static long current_time = 0;      //记录系统当前时间
-    public static final int REQUEST_ADD_NOTE=1;
-    public static final int REQUEST_LOGIN=2;
+    public static final int REQUEST_ADD_NOTE = 1;
+    public static final int REQUEST_LOGIN = 2;
 
     //使用butterknife绑定控件
     @BindView(R.id.fab)
@@ -208,8 +205,9 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                final List<NoteInfo> infos = new Operate(helper.getReadableDatabase()).getAll();
-
+                List<NoteInfo> all = new Operate(helper.getReadableDatabase()).getAll();
+                Collections.reverse(all);
+                final List<NoteInfo> infos = all;
                 int size = infos.size();
                 for (int i = size - 1; i >= 0; i--) {
                     String content = infos.get(i).getNote();
@@ -252,7 +250,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 String text1 = info.getNote();
                 intent.putExtra("text", text1);
                 intent.putExtra("which", "2");
-                startActivityForResult(intent,REQUEST_ADD_NOTE);
+                startActivityForResult(intent, REQUEST_ADD_NOTE);
             }
 
         });
@@ -299,7 +297,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             default:
                 break;
         }
-        if(requestCode==REQUEST_ADD_NOTE){
+        if (requestCode == REQUEST_ADD_NOTE) {
             data_list = new Operate(helper.getReadableDatabase()).getAll();
             Collections.reverse(data_list);
             Reflesh();
@@ -484,7 +482,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                         mItemSearch.setVisible(false);
                         but.setVisibility(View.GONE);
                         item.setChecked(false);
-                        showShare();
+//                        showShare();
                         break;
                 }
                 //将选中设为点击状态
@@ -832,7 +830,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             case R.id.fab:
                 Intent it = new Intent(NoteActivity.this, AddActivity.class);
                 it.putExtra("which", "1");
-                startActivityForResult(it,REQUEST_ADD_NOTE);
+                startActivityForResult(it, REQUEST_ADD_NOTE);
                 break;
             case R.id.tv_about:
                 Snackbar.make(mClCoor, "侧滑栏有啊亲，我是占位置的。", Snackbar.LENGTH_SHORT)
@@ -962,31 +960,31 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     }
 
     //分享相关
-    private void showShare() {
-        ShareSDK.initSDK(this);
-        OnekeyShare oks = new OnekeyShare();
-        //关闭sso授权
-        oks.disableSSOWhenAuthorize();
-
-        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
-        oks.setTitle("分享");
-        // titleUrl是标题的网络链接，QQ和QQ空间等使用
-        oks.setTitleUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
-        // text是分享文本，所有平台都需要这个字段
-        oks.setText("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
-        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-        // url仅在微信（包括好友和朋友圈）中使用
-        oks.setUrl("http://sharesdk.cn");
-        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-        oks.setComment("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
-        // site是分享此内容的网站名称，仅在QQ空间使用
-        oks.setSite(getString(R.string.app_name));
-        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-        oks.setSiteUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
-
-        // 启动分享GUI
-        oks.show(this);
-    }
+//    private void showShare() {
+//        ShareSDK.initSDK(this);
+//        OnekeyShare oks = new OnekeyShare();
+//        //关闭sso授权
+//        oks.disableSSOWhenAuthorize();
+//
+//        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
+//        oks.setTitle("分享");
+//        // titleUrl是标题的网络链接，QQ和QQ空间等使用
+//        oks.setTitleUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
+//        // text是分享文本，所有平台都需要这个字段
+//        oks.setText("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
+//        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+//        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+//        // url仅在微信（包括好友和朋友圈）中使用
+//        oks.setUrl("http://sharesdk.cn");
+//        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+//        oks.setComment("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
+//        // site是分享此内容的网站名称，仅在QQ空间使用
+//        oks.setSite(getString(R.string.app_name));
+//        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+//        oks.setSiteUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
+//
+//        // 启动分享GUI
+//        oks.show(this);
+//    }
 
 }
