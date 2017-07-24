@@ -13,7 +13,7 @@ import java.util.UUID;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASENAME = "Note";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final String TABLENAME = "book";
 
     public DataBaseHelper(Context context) {
@@ -36,6 +36,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 values.put("uuid", uuid);
                 db.update(TABLENAME, values, "note=?", new String[]{note});
             }
+        } else if (oldVersion == 2) {
+            db.execSQL("ALTER TABLE " + TABLENAME + " ADD COLUMN 'updateTime'");
+            db.execSQL("ALTER TABLE " + TABLENAME + " ADD COLUMN 'title' ");
+            db.execSQL("ALTER TABLE " + TABLENAME + " ADD COLUMN 'deleted' ");
         }
     }
 

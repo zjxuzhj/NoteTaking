@@ -31,8 +31,8 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +42,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.sharesdk.framework.ShareSDK;
@@ -77,10 +80,14 @@ import zhj.notetaking.utils.PrefUtils;
 import zhj.notetaking.utils.ThemeUtils;
 import zhj.notetaking.utils.TimeUtils;
 
+import static zhj.notetaking.activity.SignupActivity.SIGNUP_OK;
+
 
 public class NoteActivity extends BaseActivity implements View.OnClickListener {
-    public static final int LOGIN_OK = 2;
+    public static final int LOGIN_OK = 1;
     private static long current_time = 0;      //记录系统当前时间
+    public static final int REQUEST_ADD_NOTE=1;
+    public static final int REQUEST_LOGIN=2;
 
     //使用butterknife绑定控件
     @BindView(R.id.fab)
@@ -96,7 +103,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.rl_about)
     RelativeLayout mRlAbout;
     @BindView(R.id.contentSetting)
-    LinearLayout mContentSetting;
+    ScrollView mContentSetting;
     @BindView(R.id.giveLove)
     TextView mGiveLove;
     @BindView(R.id.feedback)
@@ -148,6 +155,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                     delete_operate.delete((String) msg.obj);
 
                     data_list = new Operate(helper.getReadableDatabase()).getAll();
+                    Collections.reverse(data_list);
                     Reflesh();
                     break;
             }
@@ -168,6 +176,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
 
         InitView();
         data_list = operate.getAll();
+        Collections.reverse(data_list);
         setupNoteAdapter();
         Reflesh();
     }
@@ -243,8 +252,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 String text1 = info.getNote();
                 intent.putExtra("text", text1);
                 intent.putExtra("which", "2");
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent,REQUEST_ADD_NOTE);
             }
 
         });
@@ -286,16 +294,40 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             case LOGIN_OK:
                 setLogIn();
                 break;
-
+            case SIGNUP_OK:
+                setLogIn();
             default:
                 break;
         }
+        if(requestCode==REQUEST_ADD_NOTE){
+            data_list = new Operate(helper.getReadableDatabase()).getAll();
+            Collections.reverse(data_list);
+            Reflesh();
+        }
+    }
+
+    private void setSigupLogIn() {
+        String username = PrefUtils.getString(NoteActivity.this, "username", "");
+        String password = PrefUtils.getString(NoteActivity.this, "password", "");
+        BmobUser.loginByAccount(username, password, new LogInListener<User>() {
+
+            @Override
+            public void done(User user, BmobException e) {
+                if (user != null) {
+                    Log.i("smile", "用户登陆成功");
+                    UserIsLogIn();
+                } else {
+                    Log.i("smile", "用户登陆失败");
+                    Toasty.error(getApplication(), "登录失败，请检查用户名和密码", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void setLogIn() {
         User userInfo = BmobUser.getCurrentUser(User.class);
         String username = userInfo.getUsername();
-        Toasty.success(NoteActivity.this, "欢迎" + username + "的登录！", Toast.LENGTH_SHORT, true).show();
+        Toasty.success(NoteActivity.this, "欢迎 " + username + " 的登录！", Toast.LENGTH_SHORT, true).show();
         UserIsLogIn();
 
     }
@@ -342,7 +374,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, REQUEST_LOGIN);
             }
         });
     }
@@ -410,11 +442,12 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                         mItemChange.setVisible(true);
                         mItemSearch.setVisible(true);
                         but.setVisibility(View.VISIBLE);
-                        mRlAbout.setVisibility(View.INVISIBLE);
+                        mRlAbout.setVisibility(View.GONE);
                         noteRecycle.setVisibility(View.VISIBLE);
-                        mContentSetting.setVisibility(View.INVISIBLE);
+                        mContentSetting.setVisibility(View.GONE);
                         item.setChecked(true);
                         data_list = new Operate(helper.getReadableDatabase()).getAll();
+                        Collections.reverse(data_list);
                         Reflesh();
                         break;
                     case R.id.navigation_item3:
@@ -424,7 +457,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                         mItemSearch.setVisible(false);
                         but.setVisibility(View.GONE);
                         mCheckBox.setChecked(PrefUtils.getBoolean(NoteActivity.this, "isRight", false));
-                        noteRecycle.setVisibility(View.INVISIBLE);
+                        noteRecycle.setVisibility(View.GONE);
                         mContentSetting.setVisibility(View.VISIBLE);
                         String sync_time = PrefUtils.getString(NoteActivity.this, "sync_time", "尚未进行备份");
                         mTvSyncTimeline.setText(sync_time);
@@ -436,8 +469,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                         mItemSearch.setVisible(false);
                         but.setVisibility(View.GONE);
                         item.setChecked(true);
-                        noteRecycle.setVisibility(View.INVISIBLE);
-                        mContentSetting.setVisibility(View.INVISIBLE);
+                        noteRecycle.setVisibility(View.GONE);
+                        mContentSetting.setVisibility(View.GONE);
                         mRlAbout.setVisibility(View.VISIBLE);
                         break;
                     case R.id.navigation_sub_item2:
@@ -487,10 +520,12 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                     query.addWhereEqualTo("uid", mObjectId);
                     query.setLimit(150);
                     //
+                    asynTaskBeforeSend();
                     query.findObjectsByTable(new QueryListener<JSONArray>() {
                         @Override
                         public void done(JSONArray ary, final BmobException e) {
                             if (e == null) {
+                                onTaskSucceed();
                                 Log.i("bmob", "查询成功：" + ary.toString());
                                 List<NoteInfo> objectList = new ArrayList<>();
                                 final List<NoteInfo> addNoteList = new ArrayList<>();
@@ -501,11 +536,14 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                     try {
                                         temp = (JSONObject) ary.get(i);
 
-                                        String note = temp.getString("note");
-                                        String time = temp.getString("time");
-                                        String uuid = temp.getString("uuid");
-                                        String uid = temp.getString("uid");
-                                        String objectId = temp.getString("objectId");
+                                        String note = temp.optString("note");
+                                        String time = temp.optString("time");
+                                        String uuid = temp.optString("uuid");
+                                        String uid = temp.optString("uid");
+                                        String objectId = temp.optString("objectId");
+                                        String updateTime = temp.optString("updateTime");
+                                        String title = temp.optString("title");
+                                        String deleted = temp.optString("deleted");
 
                                         NoteInfo tempNote = new NoteInfo();
                                         tempNote.setTime(time);
@@ -513,6 +551,9 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                         tempNote.setUid(uid);
                                         tempNote.setUuid(uuid);
                                         tempNote.setObjectId(objectId);
+                                        tempNote.setUpdateTime(updateTime);
+                                        tempNote.setTitle(title);
+                                        tempNote.setDeleted(deleted);
                                         objectList.add(tempNote);
 
                                     } catch (JSONException e1) {
@@ -521,6 +562,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                 }
 
                                 if (data_list != null) {
+                                    //更新网上备份逻辑
                                     for (NoteInfo info : objectList) {
                                         for (int i = 0; i < data_list.size(); i++) {
                                             if (data_list.get(i).getUuid().contains("9cab4310-2ddc-45ca-b735-2de9a11fd11")) {
@@ -567,7 +609,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                     updateNote.addAll(updateNoteList);
                                     batch.updateBatch(updateNote);
                                     if (addNoteList.size() + updateNoteList.size() < 1) {
-                                        copySuccess(addNoteList.size(),updateNoteList.size());
+                                        copySuccess(addNoteList.size(), updateNoteList.size());
                                         return;
                                     }
                                     if (addNoteList.size() + updateNoteList.size() > 50) {
@@ -590,7 +632,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                                         Log.i("bmob", "第" + i + "个失败：" + error.getErrorCode() + "," + error.getMessage());
                                                     }
                                                 }
-                                                copySuccess(addNoteList.size(),updateNote.size());
+                                                copySuccess(addNoteList.size(), updateNote.size());
                                             } else {
                                                 Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                                                 Toasty.error(NoteActivity.this, "备份失败！" + e.getMessage() + "," + e.getErrorCode(), Toast.LENGTH_SHORT).show();
@@ -599,6 +641,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                     });
                                 }
                             } else {
+                                onTaskFail();
                                 Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                             }
                         }
@@ -607,7 +650,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         });
-        //还原备份到本地
+        //还原备份到本地逻辑
         mTvRestoreNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -622,10 +665,12 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                     query.addWhereEqualTo("uid", mObjectId);
                     query.setLimit(150);
                     //
+                    asynTaskBeforeSend();
                     query.findObjectsByTable(new QueryListener<JSONArray>() {
                         @Override
                         public void done(JSONArray ary, final BmobException e) {
                             if (e == null) {
+                                onTaskSucceed();
                                 Log.i("bmob", "查询成功：" + ary.toString());
                                 List<NoteInfo> objectList = new ArrayList<>();
                                 List<NoteInfo> addNoteList = new ArrayList<>();
@@ -636,11 +681,14 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                     try {
                                         temp = (JSONObject) ary.get(i);
 
-                                        String note = temp.getString("note");
-                                        String time = temp.getString("time");
-                                        String uuid = temp.getString("uuid");
-                                        String uid = temp.getString("uid");
-                                        String objectId = temp.getString("objectId");
+                                        String note = temp.optString("note");
+                                        String time = temp.optString("time");
+                                        String uuid = temp.optString("uuid");
+                                        String uid = temp.optString("uid");
+                                        String objectId = temp.optString("objectId");
+                                        String updateTime = temp.optString("updateTime");
+                                        String title = temp.optString("title");
+                                        String deleted = temp.optString("deleted");
 
                                         NoteInfo tempNote = new NoteInfo();
                                         tempNote.setTime(time);
@@ -648,6 +696,9 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                         tempNote.setUid(uid);
                                         tempNote.setUuid(uuid);
                                         tempNote.setObjectId(objectId);
+                                        tempNote.setUpdateTime(updateTime);
+                                        tempNote.setTitle(title);
+                                        tempNote.setDeleted(deleted);
                                         objectList.add(tempNote);
 
                                     } catch (JSONException e1) {
@@ -694,12 +745,13 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                     }
                                     for (NoteInfo noteInfo : updateNoteList) {
                                         Operate operate = new Operate(helper.getWritableDatabase());
-                                        operate.update(noteInfo.getNote(), noteInfo.getTime(), noteInfo.getUuid());
+                                        operate.update(noteInfo.getNote(), noteInfo.getUpdateTime(), noteInfo.getUuid());
                                     }
-                                    syncSuccess(addNoteList.size(),updateNoteList.size());
+                                    syncSuccess(addNoteList.size(), updateNoteList.size());
                                 }
 
                             } else {
+                                onTaskFail();
                                 Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                             }
                         }
@@ -710,12 +762,13 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void copySuccess(int add, int update) {
-        Toasty.success(NoteActivity.this, "云端备份成功！新增笔记 "+add+"条，更新笔记 "+update+"条", Toast.LENGTH_SHORT).show();
+        Toasty.success(NoteActivity.this, "云端备份成功！新增笔记 " + add + "条，更新笔记 " + update + "条", Toast.LENGTH_SHORT).show();
         mTvSyncTimeline.setText(TimeUtils.getCurrentTimeInString() + "");
         PrefUtils.putString(NoteActivity.this, "sync_time", TimeUtils.getCurrentTimeInString() + "");
     }
+
     private void syncSuccess(int add, int update) {
-        Toasty.success(NoteActivity.this, "云端备份同步成功！新增笔记 "+add+"条，更新笔记 "+update+"条", Toast.LENGTH_SHORT).show();
+        Toasty.success(NoteActivity.this, "备份笔记同步成功！新增笔记 " + add + "条，更新笔记 " + update + "条", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -779,8 +832,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
             case R.id.fab:
                 Intent it = new Intent(NoteActivity.this, AddActivity.class);
                 it.putExtra("which", "1");
-                startActivity(it);
-                finish();
+                startActivityForResult(it,REQUEST_ADD_NOTE);
                 break;
             case R.id.tv_about:
                 Snackbar.make(mClCoor, "侧滑栏有啊亲，我是占位置的。", Snackbar.LENGTH_SHORT)

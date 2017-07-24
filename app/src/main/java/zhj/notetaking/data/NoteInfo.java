@@ -47,4 +47,32 @@ public class NoteInfo extends BmobObject{
     public void setUid(String uid) {
         this.uid = uid;
     }
+
+    private String updateTime;
+    private String title;
+    private String deleted;
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
+    }
 }

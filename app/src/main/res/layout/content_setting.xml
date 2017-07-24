@@ -1,262 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    android:layout_width="wrap_content"
     android:id="@+id/contentSetting"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical"
+    android:visibility="gone"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    android:paddingTop="8dp"
-    android:visibility="invisible"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_marginBottom="50dp"
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:lines="1"
-        android:text="常规"
-        android:textColor="?attr/colorAccent"
-        android:textSize="14sp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
 
-    <RelativeLayout
-        android:id="@+id/ll_isRight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp"
-        >
-
+       >
 
         <TextView
-
-            android:id="@+id/tv_isRight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:lines="1"
+            android:text="常规"
+            android:textColor="?attr/colorAccent"
+            android:textSize="14sp"/>
+
+        <RelativeLayout
+            android:id="@+id/ll_isRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
-            android:lines="1"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            >
+
+
+            <TextView
+
+                android:id="@+id/tv_isRight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:paddingLeft="12dp"
+                android:paddingTop="16dp"
+                android:text="右手操作模式"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"/>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_isRight"
+                android:paddingLeft="12dp"
+                android:paddingTop="3dp"
+                android:text="侧滑栏从右手边滑出"
+                android:textColor="@color/secondary_text"
+
+                android:textSize="14sp"/>
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
+
+        <RelativeLayout
+            android:id="@+id/rel_copy_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:paddingBottom="16dp"
             android:paddingLeft="12dp"
-            android:paddingTop="16dp"
-            android:text="右手操作模式"
-            android:textColor="@color/primary_text"
-            android:textSize="16sp"/>
+            android:paddingRight="12dp"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/copy_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="点击备份到本地"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_cache_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/copy_note"
+                android:layout_centerVertical="true"
+                android:paddingTop="3dp"
+                android:text="备份笔记到存储卡/NoteTaking/notes.txt"
+                android:textColor="@color/secondary_text"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
 
         <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_isRight"
-            android:paddingLeft="12dp"
-            android:paddingTop="3dp"
-            android:text="侧滑栏从右手边滑出"
-            android:textColor="@color/secondary_text"
-
-            android:textSize="14sp"/>
-
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:clickable="false"
-            android:focusable="false"/>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divider"/>
-
-    <RelativeLayout
-        android:id="@+id/rel_copy_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="16dp">
-
-        <TextView
-            android:id="@+id/copy_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:text="点击备份到本地"
-            android:textColor="@color/primary_text"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tv_cache_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/copy_note"
-            android:layout_centerVertical="true"
-            android:paddingTop="3dp"
-            android:text="备份笔记到存储卡/NoteTaking/notes.txt"
-            android:textColor="@color/secondary_text"
-            android:textSize="14sp"/>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divider"/>
-
-    <TextView
-        android:id="@+id/change_Theme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:lines="1"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:text="更换主题"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="24dp"
-        android:lines="1"
-        android:text="云备份"
-        android:textColor="@color/colorAccent"
-        android:textSize="14sp"/>
-
-    <TextView
-        android:id="@+id/tv_sync_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:lines="1"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:text="点击立即备份到服务器"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divider"/>
-    <RelativeLayout
-        android:id="@+id/rel_sync_timeline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="16dp">
-        <TextView
-            android:id="@+id/tv_sync_time_title"
+            android:id="@+id/change_Theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_list"
             android:lines="1"
-            android:text="最后备份时间时间"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="更换主题"
             android:textColor="@color/primary_text"
             android:textSize="16sp"/>
+
         <TextView
-            android:id="@+id/tv_sync_timeline"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="尚未进行备份"
-            android:textColor="@color/secondary_text"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="24dp"
+            android:lines="1"
+            android:text="云备份"
+            android:textColor="?attr/colorAccent"
             android:textSize="14sp"/>
 
-    </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divider"/>
-    <TextView
-        android:id="@+id/tv_restore_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:lines="1"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:text="还原备份到本地"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="24dp"
-        android:lines="1"
-        android:text="其他"
-        android:textColor="?attr/colorAccent"
-        android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/tv_sync_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="点击立即备份到服务器"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/giveLove"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:lines="1"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:text="给应用点赞"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divider"/>
+        <RelativeLayout
+            android:id="@+id/rel_sync_timeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="16dp">
 
-    <TextView
-        android:id="@+id/feedback"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:lines="1"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:text="意见反馈"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv_sync_time_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list"
+                android:lines="1"
+                android:text="最后备份时间时间"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/divider"/>
+            <TextView
+                android:id="@+id/tv_sync_timeline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="尚未进行备份"
+                android:textColor="@color/secondary_text"
+                android:textSize="14sp"/>
 
-    <TextView
-        android:id="@+id/tv_about"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_list"
-        android:lines="1"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:text="关于我们"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp"/>
+        </RelativeLayout>
 
-</LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
 
+        <TextView
+            android:id="@+id/tv_restore_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="还原备份到本地"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="24dp"
+            android:lines="1"
+            android:text="其他"
+            android:textColor="?attr/colorAccent"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/giveLove"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="给应用点赞"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
+
+        <TextView
+            android:id="@+id/feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="意见反馈"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"/>
+
+        <TextView
+            android:id="@+id/tv_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list"
+            android:lines="1"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="16dp"
+            android:text="关于我们"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -74,6 +74,7 @@
         <EditText
             android:id="@+id/edit"
             android:layout_marginLeft="5dp"
+            android:hint="请输入文字"
             android:layout_marginRight="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
