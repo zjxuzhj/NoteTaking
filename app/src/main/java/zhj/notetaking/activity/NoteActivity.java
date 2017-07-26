@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -59,6 +61,8 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.QueryListener;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.adapter.AdapterType;
@@ -73,6 +77,7 @@ import zhj.notetaking.listener.ItemClickListener;
 import zhj.notetaking.listener.ItemLongClickListener;
 import zhj.notetaking.utils.DialogUtils;
 import zhj.notetaking.utils.FileUtils;
+import zhj.notetaking.utils.NoteTakingUtils;
 import zhj.notetaking.utils.PrefUtils;
 import zhj.notetaking.utils.ThemeUtils;
 import zhj.notetaking.utils.TimeUtils;
@@ -123,6 +128,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     TextView mTvSyncTimeline;
     @BindView(R.id.tv_restore_note)
     TextView mTvRestoreNote;
+    @BindView(R.id.textView)
+    TextView mTextView;
 
 
     private SearchView mSearchView;
@@ -162,6 +169,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     private ImageView mIv_pic_header;
     private TextView mTv_pic_header;
     private View mHeaderView;
+    private View mSearchEditFrame;
 
 
     @Override
@@ -186,54 +194,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         layoutManager.setSpanCount(isSingle ? 1 : 2);
     }
 
-    //设置搜索View 的监听
-    private void setSearchViewListener() {
-        // 关闭按钮监听
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                noteAdapter.setDataAndType(AdapterType.NOTE_TYPE, null);
-                return false;
-            }
-        });
-        // 搜索文字监听
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+    private boolean mSearchCheck;
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                List<NoteInfo> all = new Operate(helper.getReadableDatabase()).getAll();
-                Collections.reverse(all);
-                final List<NoteInfo> infos = all;
-                int size = infos.size();
-                for (int i = size - 1; i >= 0; i--) {
-                    String content = infos.get(i).getNote();
-                    if (!content.contains(newText)) {
-                        infos.remove(i);
-                    }
-                }
-
-                noteAdapter.setDataAndType(AdapterType.SEARCH_TYPE, new ISearchAdapter() {
-                    @Override
-                    public List<NoteInfo> get() {
-                        return infos;
-                    }
-                });
-                notifyDataChanged();
-                return false;
-            }
-        });
-    }
-
-
-    //数据改变
-    private void notifyDataChanged() {
-        noteAdapter.getNoteInfos(data_list);
-        noteAdapter.notifyDataSetChanged();
-    }
 
     //初始化适配器
     private void setupNoteAdapter() {
@@ -324,9 +286,11 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
 
     public void setLogIn() {
         User userInfo = BmobUser.getCurrentUser(User.class);
-        String username = userInfo.getUsername();
-        Toasty.success(NoteActivity.this, "欢迎 " + username + " 的登录！", Toast.LENGTH_SHORT, true).show();
-        UserIsLogIn();
+        if (userInfo != null) {
+            String username = userInfo.getUsername();
+            Toasty.success(NoteActivity.this, "欢迎 " + username + " 的登录！", Toast.LENGTH_SHORT, true).show();
+            UserIsLogIn();
+        }
 
     }
 
@@ -401,6 +365,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         }
 
         mToolBar.setTitle("记笔记");
+        mTextView.setText("记笔记 "+ NoteTakingUtils.getAppVersion(this,"2.0.0"));
         setSupportActionBar(mToolBar);
 
         mToolBar.setOnMenuItemClickListener(onMenuItemClick);
@@ -482,7 +447,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                         mItemSearch.setVisible(false);
                         but.setVisibility(View.GONE);
                         item.setChecked(false);
-//                        showShare();
+                        showShare();
                         break;
                 }
                 //将选中设为点击状态
@@ -739,7 +704,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                                     //执行批量操作,更新本地数据库和添加
                                     for (NoteInfo noteInfo : addNoteList) {
                                         Operate operate = new Operate(helper.getWritableDatabase());
-                                        operate.insert(noteInfo.getNote(), noteInfo.getTime(), noteInfo.getUuid());
+                                        operate.insert(noteInfo.getNote(), noteInfo.getTime(), noteInfo.getTime(), noteInfo.getUuid());
                                     }
                                     for (NoteInfo noteInfo : updateNoteList) {
                                         Operate operate = new Operate(helper.getWritableDatabase());
@@ -959,32 +924,101 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         return true;
     }
 
+    //设置搜索View 的监听
+    private void setSearchViewListener() {
+
+        //需要对系统版本做判断
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            MenuItemCompat.setOnActionExpandListener(mItemSearch,
+                    new MenuItemCompat.OnActionExpandListener() {
+                        @Override
+                        public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                            //添加searchView关闭事件
+                            noteAdapter.setDataAndType(AdapterType.NOTE_TYPE, null);
+                            data_list = new Operate(helper.getReadableDatabase()).getAll();
+                            Collections.reverse(data_list);
+                            Reflesh();
+                            return true;
+                        }
+                    });
+        } else {
+            mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    //添加searchView关闭事件
+                    noteAdapter.setDataAndType(AdapterType.NOTE_TYPE, null);
+                    data_list = new Operate(helper.getReadableDatabase()).getAll();
+                    Collections.reverse(data_list);
+                    Reflesh();
+                    return true;
+                }
+            });
+        }
+        // 搜索文字监听
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //输入的同时会进行搜索
+                List<NoteInfo> all = new Operate(helper.getReadableDatabase()).getAll();
+                Collections.reverse(all);
+                final List<NoteInfo> infos = all;
+                int size = infos.size();
+                for (int i = size - 1; i >= 0; i--) {
+                    String content = infos.get(i).getNote();
+                    if (!content.contains(newText)) {
+                        infos.remove(i);
+                    }
+                }
+
+                noteAdapter.setDataAndType(AdapterType.SEARCH_TYPE, new ISearchAdapter() {
+                    @Override
+                    public List<NoteInfo> get() {
+                        return infos;
+                    }
+                });
+                Reflesh();
+
+                return false;
+            }
+        });
+    }
+
     //分享相关
-//    private void showShare() {
-//        ShareSDK.initSDK(this);
-//        OnekeyShare oks = new OnekeyShare();
-//        //关闭sso授权
-//        oks.disableSSOWhenAuthorize();
-//
-//        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
-//        oks.setTitle("分享");
-//        // titleUrl是标题的网络链接，QQ和QQ空间等使用
-//        oks.setTitleUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
-//        // text是分享文本，所有平台都需要这个字段
-//        oks.setText("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
-//        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-//        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-//        // url仅在微信（包括好友和朋友圈）中使用
-//        oks.setUrl("http://sharesdk.cn");
-//        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-//        oks.setComment("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
-//        // site是分享此内容的网站名称，仅在QQ空间使用
-//        oks.setSite(getString(R.string.app_name));
-//        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-//        oks.setSiteUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
-//
-//        // 启动分享GUI
-//        oks.show(this);
-//    }
+    private void showShare() {
+        ShareSDK.initSDK(this);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
+        oks.setTitle("分享");
+        // titleUrl是标题的网络链接，QQ和QQ空间等使用
+        oks.setTitleUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://sharesdk.cn");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment("记笔记是一款简美且好用的笔记应用，回归笔记的文字时代，方便你随时随地记录点滴 ，交互设计采用Material Design。");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://android.myapp.com/myapp/detail.htm?apkName=zhj.notetaking");
+
+        // 启动分享GUI
+        oks.show(this);
+    }
 
 }

@@ -9,8 +9,8 @@ android {
         applicationId "zhj.notetaking"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 5
-        versionName "2.0"
+        versionCode 6
+        versionName "2.1.0"
     }
     buildTypes {
         debug {
@@ -18,12 +18,18 @@ android {
             shrinkResources false
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
@@ -51,7 +57,7 @@ dependencies {
     //3.5.0：请务必查看下面注释[1]
     compile 'cn.bmob.android:bmob-sdk:3.5.3'
     compile 'com.github.GrenderG:Toasty:1.2.3'
-    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:design:25.3.1'
     compile 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
 //    compile 'com.facebook.stetho:stetho:1.5.0'
 

@@ -10,6 +10,8 @@ import java.util.Map;
 
 import zhj.notetaking.data.NoteInfo;
 
+import static u.aly.au.S;
+
 
 public class Operate {
     private static final String TABLEENAME = "book";
@@ -19,9 +21,9 @@ public class Operate {
         this.db = db;
     }
 
-    public void insert(String note, String time, String uuid1) {
-        String sql = "insert into " + TABLEENAME + " (note,time,uuid) values(?,?,?)";
-        Object obj[] = new Object[]{note, time,uuid1};
+    public void insert(String note, String time,String updateTime, String uuid1) {
+        String sql = "insert into " + TABLEENAME + " (note,time,updateTime,uuid) values(?,?,?,?)";
+        Object obj[] = new Object[]{note, time,updateTime,uuid1};
         this.db.execSQL(sql, obj);
         this.db.close();
     }

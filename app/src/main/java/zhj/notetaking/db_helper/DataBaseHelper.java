@@ -54,7 +54,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "id integer primary key," +
                 "note text," +
                 "time DATE," +
-                "uuid text)";
+                "uuid text,"+
+                "updateTime DATE,"+
+                "title text,"+
+                "deleted text)";
         db.execSQL(sql);
         SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm:ss");
         long time = System.currentTimeMillis();
@@ -65,6 +68,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         cv.put("note", "长按可以删除此条笔记！");
         cv.put("time", t1);
+        cv.put("updateTime", t1);
         cv.put("uuid", "9cab4310-2ddc-45ca-b735-2de9a11fd111");
         //返回id long型  如果不成功返回-1
         //1-表名
@@ -74,17 +78,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.clear();
         cv.put("note", "记笔记是一款简洁明了的笔记app，方便你随时随地记录点滴 。喜欢可以给个五分好评哦亲！");
         cv.put("time", t1);
+        cv.put("updateTime", t1);
         cv.put("uuid", "9cab4310-2ddc-45ca-b735-2de9a11fd112");
         db.insert(TABLENAME, null, cv);
         cv.clear();
         cv.put("note", "点击下方的悬浮按钮可以创建新的笔记。");
         cv.put("time", t1);
+        cv.put("updateTime", t1);
         cv.put("uuid", "9cab4310-2ddc-45ca-b735-2de9a11fd113");
         db.insert(TABLENAME, null, cv);
         cv.clear();
         cv.put("note", "江城子·乙卯正月二十日夜记梦 十年生死两茫茫，不思量，自难忘。千里孤坟，无处话凄凉。纵使相逢应不识，尘满面，鬓如霜。\n" +
                 "夜来幽梦忽还乡，小轩窗，正梳妆。相顾无言，惟有泪千行。料得年年肠断处，明月夜，短松冈。");
         cv.put("time", t1);
+        cv.put("updateTime", t1);
         cv.put("uuid", "9cab4310-2ddc-45ca-b735-2de9a11fd114");
         db.insert(TABLENAME, null, cv);
 

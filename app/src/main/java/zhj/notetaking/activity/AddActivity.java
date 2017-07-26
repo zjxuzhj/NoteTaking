@@ -88,7 +88,7 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
 
         if (which.equals("1")) {                //执行插入操作
             if (!newnote.equals("") || !newnote.trim().equals("")) {
-                operate.insert(newnote, t1, uuid1);
+                operate.insert(newnote, t1,t1, uuid1);
                 finish();
             } else {
                 finish();
