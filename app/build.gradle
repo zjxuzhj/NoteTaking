@@ -1,64 +1,107 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
         applicationId "zhj.notetaking"
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 6
-        versionName "2.1.0"
+        versionCode 7
+        versionName "2.1.1"
     }
     buildTypes {
         debug {
             minifyEnabled false
             shrinkResources false
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "boolean", "USE_CANARY", "true"
         }
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "boolean", "USE_CANARY", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
         }
     }
     lintOptions {
         checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
+        disable 'InvalidPackage'
+        disable "ResourceType"
         abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:cardview-v7:24.0.0'
-    compile 'com.umeng.analytics:analytics:6.0.1'
-    compile 'com.jakewharton:butterknife:8.2.1'
-    apt 'com.jakewharton:butterknife-compiler:8.2.1'
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
-    compile files('libs/MobCommons-2016.0707.1708.jar')
-    compile files('libs/MobTools-2016.0707.1708.jar')
-    compile files('libs/ShareSDK-Core-2.7.4.jar')
-    compile files('libs/ShareSDK-Email-2.7.4.jar')
-    compile files('libs/ShareSDK-Facebook-2.7.4.jar')
-    compile files('libs/ShareSDK-QQ-2.7.4.jar')
-    compile files('libs/ShareSDK-QZone-2.7.4.jar')
-    compile files('libs/ShareSDK-ShortMessage-2.7.4.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.7.4.jar')
-    compile files('libs/ShareSDK-Twitter-2.7.4.jar')
-    //以下SDK开发者请根据需要自行选择
-    //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务，以下是最新的bmob-sdk:
-    //3.5.0：请务必查看下面注释[1]
-    compile 'cn.bmob.android:bmob-sdk:3.5.3'
-    compile 'com.github.GrenderG:Toasty:1.2.3'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
-//    compile 'com.facebook.stetho:stetho:1.5.0'
+
+    //support
+    compile(rootProject.ext.dependencies["support-v4"]) {
+        exclude module: 'support-annotations'
+    }
+    compile(rootProject.ext.dependencies["appcompat-v7"]) {
+        exclude module: 'support-annotations'
+        exclude module: 'support-v4'
+    }
+    compile(rootProject.ext.dependencies["design"]) {
+        exclude module: 'support-annotations'
+        exclude module: 'appcompat-v7'
+        exclude module: 'support-v4'
+    }
+    compile rootProject.ext.dependencies["annotations"]
+
+    //view
+    compile(rootProject.ext.dependencies["butterknife"]) {
+        exclude module: 'support-annotations'
+    }
+    annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {
+        exclude module: 'support-annotations'
+        exclude module: 'butterknife-annotations'
+    }
+    compile rootProject.ext.dependencies["systembartint"]
+
+    //toast
+    compile rootProject.ext.dependencies["Toasty"]
+
+    //support
+    compile(rootProject.ext.dependencies["cardview-v7"]) {
+        exclude module: 'support-annotations'
+    }
+
+    //rx
+    compile rootProject.ext.dependencies["rxjava2"]
+    compile(rootProject.ext.dependencies["rxandroid2"]) {
+        exclude module: 'rxjava'
+    }
+    compile(rootProject.ext.dependencies["rxpermissions2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'support-annotations'
+    }
+    compile(rootProject.ext.dependencies['rxerrorhandler2']) {
+        exclude module: 'rxjava'
+        exclude module: 'appcompat-v7'
+    }
+
+    //test
+    compile rootProject.ext.dependencies["umeng-analytics"]
+    compile rootProject.ext.dependencies["junit"]
+    compile rootProject.ext.dependencies["bugly"]
+
+    //tools
+    compile rootProject.ext.dependencies["bmob"]
+    compile rootProject.ext.dependencies["stetho"]
+
+
+
+
 
 }

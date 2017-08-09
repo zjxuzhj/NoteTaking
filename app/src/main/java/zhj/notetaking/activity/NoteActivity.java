@@ -1,5 +1,6 @@
 package zhj.notetaking.activity;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -38,6 +39,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +67,10 @@ import cn.bmob.v3.listener.QueryListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import zhj.notetaking.R;
 import zhj.notetaking.adapter.AdapterType;
 import zhj.notetaking.adapter.ColorsListAdapter;
@@ -365,7 +372,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         }
 
         mToolBar.setTitle("记笔记");
-        mTextView.setText("记笔记 "+ NoteTakingUtils.getAppVersion(this,"2.0.0"));
+        mTextView.setText("记笔记 " + NoteTakingUtils.getAppVersion(this, "2.0.0"));
         setSupportActionBar(mToolBar);
 
         mToolBar.setOnMenuItemClickListener(onMenuItemClick);
@@ -878,16 +885,60 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     }
 
     //备份笔记
+    private RxErrorHandler mErrorHandler;
+    private RxPermissions mRxPermissions;
+
+    public RxPermissions getRxPermissions() {
+        return mRxPermissions;
+    }
+
     private void backupLocal() {
-        mFileUtils = new FileUtils();
-        mFileUtils.backupNotes(this, data_list);
-        Snackbar.make(mClCoor, "备份完成", Snackbar.LENGTH_SHORT)
-                .setAction("确定", new View.OnClickListener() {
+        this.mRxPermissions = new RxPermissions(this);
+        //请求外部存储权限用于适配android6.0的权限管理机制
+        mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Observer<Boolean>() {
                     @Override
-                    public void onClick(View view) {
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
-                }).show();
+
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
+                        if (aBoolean) {
+                            //当所有权限都允许之后，返回true
+                            Log.i("permissions", "btn_more_sametime：" + aBoolean);
+                            mFileUtils = new FileUtils();
+                            mFileUtils.backupNotes(NoteActivity.this, data_list);
+                            Snackbar.make(mClCoor, "备份完成", Snackbar.LENGTH_SHORT)
+                                    .setAction("确定", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                        }
+                                    }).show();
+                        } else {
+                            //只要有一个权限禁止，返回false，
+                            //下一次申请只申请没通过申请的权限
+                            Log.i("permissions", "btn_more_sametime：" + aBoolean);
+                            Toasty.error(NoteActivity.this, "没有获得sd卡存储权限请手动打开", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                            intent.setData(Uri.fromParts("package", getPackageName(), null));
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
 
     }
 
@@ -991,6 +1042,12 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.mErrorHandler = null;
     }
 
     //分享相关

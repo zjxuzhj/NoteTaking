@@ -22,6 +22,16 @@
 
 -keep class zhj.notetaking.data.** { *; }
 -keep class zhj.notetaking.domain.** { *; }
+-keepnames class * implements java.io.Serializable
+
+-keepclasseswithmembernames class * { # 保持native方法不被混淆
+    native <methods>;
+}
+
+-keepclassmembers enum * {  # 使用enum类型时需要注意避免以下两个方法混淆，因为enum类的特殊性，以下两个方法会被反射调用，
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 #-------------------------------------------------------------------------
 
@@ -52,18 +62,6 @@
 # 确保JavaBean不被混淆-否则gson将无法将数据解析成具体对象
 -keep class * extends cn.bmob.v3.BmobObject {
     *;
-}
-# keep rx
--dontwarn sun.misc.**
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
- long producerIndex;
- long consumerIndex;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
- rx.internal.util.atomic.LinkedQueueNode producerNode;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
- rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
 # 如果你使用了support v4包，请添加如下混淆代码
@@ -112,6 +110,121 @@
 # Bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+# stetho
+-keep class com.facebook.stetho.** { *; }
+-dontwarn org.mozilla.javascript.**
+-dontwarn org.mozilla.classfile.**
+-keep class org.mozilla.javascript.** { *; }
+
+################Rxjava and RxAndroid###############
+-dontwarn sun.misc.**
+-dontwarn org.mockito.**
+-dontwarn org.junit.**
+-dontwarn org.robolectric.**
+
+-keep class io.reactivex.** { *; }
+-keep interface io.reactivex.** { *; }
+
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-dontwarn okio.**
+-keep interface com.squareup.okhttp.** { *; }
+-dontwarn com.squareup.okhttp.**
+
+-dontwarn io.reactivex.**
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+
+-keep class sun.misc.Unsafe { *; }
+
+-dontwarn java.lang.invoke.*
+
+-keep class io.reactivex.schedulers.Schedulers {
+    public static <methods>;
+}
+-keep class io.reactivex.schedulers.ImmediateScheduler {
+    public <methods>;
+}
+-keep class io.reactivex.schedulers.TestScheduler {
+    public <methods>;
+}
+-keep class io.reactivex.schedulers.Schedulers {
+    public static ** test();
+}
+-keepclassmembers class io.reactivex.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class io.reactivex.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    long producerNode;
+    long consumerNode;
+}
+
+-keepclassmembers class io.reactivex.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    io.reactivex.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class io.reactivex.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    io.reactivex.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-dontwarn io.reactivex.internal.util.unsafe.**
+
+################RxPermissions#################
+-keep class com.tbruyelle.rxpermissions2.** { *; }
+-keep interface com.tbruyelle.rxpermissions2.** { *; }
+
+################espresso###############
+-keep class android.support.test.espresso.** { *; }
+-keep interface android.support.test.espresso.** { *; }
+
+
+
+################annotation###############
+-keep class android.support.annotation.** { *; }
+-keep interface android.support.annotation.** { *; }
+
+
+################RxLifeCycle#################
+-keep class com.trello.rxlifecycle2.** { *; }
+-keep interface com.trello.rxlifecycle2.** { *; }
+
+
+################RxPermissions#################
+-keep class com.tbruyelle.rxpermissions2.** { *; }
+-keep interface com.tbruyelle.rxpermissions2.** { *; }
+
+################RxCache#################
+-dontwarn io.rx_cache2.internal.**
+-keep class io.rx_cache2.internal.Record { *; }
+-keep class io.rx_cache2.Source { *; }
+
+-keep class io.victoralbertos.jolyglot.** { *; }
+-keep interface io.victoralbertos.jolyglot.** { *; }
+
+################RxErrorHandler#################
+ -keep class me.jessyan.rxerrorhandler.** { *; }
+ -keep interface me.jessyan.rxerrorhandler.** { *; }
+
+################Timber#################
+-dontwarn org.jetbrains.annotations.**
+
+
+################Canary#################
+-dontwarn com.squareup.haha.guava.**
+-dontwarn com.squareup.haha.perflib.**
+-dontwarn com.squareup.haha.trove.**
+-dontwarn com.squareup.leakcanary.**
+-keep class com.squareup.haha.** { *; }
+-keep class com.squareup.leakcanary.** { *; }
+
+# Marshmallow removed Notification.setLatestEventInfo()
+-dontwarn android.app.Notification
+
 #-------------------------------------------------------------------------
 
 #---------------------------------3.与js互相调用的类------------------------
@@ -148,7 +261,14 @@
 -keep public class * extends android.preference.Preference
 -keep public class * extends android.view.View
 -keep public class com.android.vending.licensing.ILicensingService
--keep class android.support.** {*;}
+-dontwarn android.test.**
+-dontwarn sun.reflect.**
+
+################support###############
+-keep class android.support.** { *; }
+-keep interface android.support.** { *; }
+-dontwarn android.support.**
+
 # support design
 #@link
 -dontwarn android.support.design.**
