@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import zhj.notetaking.R;
 import zhj.notetaking.db_helper.DataBaseHelper;
 import zhj.notetaking.db_helper.Operate;
@@ -97,6 +98,7 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
             operate.update(note, newnote, t1);
             finish();
         }
+        Toasty.info(getApplicationContext(), "保存成功！").show();
     }
 
     @Override
