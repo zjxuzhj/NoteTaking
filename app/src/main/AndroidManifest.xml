@@ -86,6 +86,9 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="zhj.notetaking.action.CLICK" />
+                <action android:name="zhj.notetaking.action.item1.CLICK" />
+                <action android:name="zhj.notetaking.action.item2.CLICK" />
+                <action android:name="zhj.notetaking.action.item3.CLICK" />
             </intent-filter>
         </receiver>
 

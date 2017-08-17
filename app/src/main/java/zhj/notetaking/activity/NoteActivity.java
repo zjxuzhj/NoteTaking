@@ -3,6 +3,7 @@ package zhj.notetaking.activity;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,6 +76,7 @@ import zhj.notetaking.R;
 import zhj.notetaking.adapter.AdapterType;
 import zhj.notetaking.adapter.ColorsListAdapter;
 import zhj.notetaking.adapter.NoteAdapter;
+import zhj.notetaking.broadcast.TestWidgetProvider;
 import zhj.notetaking.data.NoteInfo;
 import zhj.notetaking.db_helper.DataBaseHelper;
 import zhj.notetaking.db_helper.Operate;
@@ -168,6 +170,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                     data_list = new Operate(helper.getReadableDatabase()).getAll();
                     Collections.reverse(data_list);
                     Reflesh();
+                    updateWidget(NoteActivity.this);
                     break;
             }
         }
@@ -211,6 +214,7 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         noteRecycle.setLayoutManager(layoutManager);
         noteAdapter = new NoteAdapter(this, data_list);
 
+        //item点击事件
         noteAdapter.setItemClickListener(new ItemClickListener() {
 
             @Override
@@ -334,6 +338,13 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
                 builder.show();
             }
         });
+    }
+    //发送广播，使appWidget更新
+    private void updateWidget(Context context) {
+        Intent intent = new Intent(context, TestWidgetProvider.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 123);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        context.sendBroadcast(intent);
     }
 
     private void UserIsLogOut() {
