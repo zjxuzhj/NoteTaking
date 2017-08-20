@@ -109,6 +109,7 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
 
     private void updateNotification() {
         updateWidget(AddActivity.this);
+        updateNoteList(AddActivity.this);
 
         Toasty.info(getApplicationContext(), "保存成功！").show();
     }
@@ -134,6 +135,11 @@ public class AddActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = new Intent(context, TestWidgetProvider.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 123);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        context.sendBroadcast(intent);
+    }//发送广播，使appWidget更新
+    private void updateNoteList(Context context) {
+        Intent intent = new Intent();
+        intent.setAction("zhj.notetaking.action.update");
         context.sendBroadcast(intent);
     }
 }

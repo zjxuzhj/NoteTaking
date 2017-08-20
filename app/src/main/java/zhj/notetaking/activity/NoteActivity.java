@@ -5,12 +5,15 @@ import android.app.Dialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -180,7 +183,18 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     private TextView mTv_pic_header;
     private View mHeaderView;
     private View mSearchEditFrame;
+    private UpdateNoteListReceiver mUpdateNoteListReceiver;
+    class UpdateNoteListReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            if(noteAdapter!=null&&helper!=null&&data_list!=null&&data_list.size()>0){
+                data_list = new Operate(helper.getReadableDatabase()).getAll();
+                Collections.reverse(data_list);
+                Reflesh();
+            }
+        }
 
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +202,10 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
         Bmob.initialize(this, "9a694364df25c39dd2772b75b88b6935");
         setContentView(R.layout.activity_note);
         ButterKnife.bind(this);
-
+        mUpdateNoteListReceiver = new UpdateNoteListReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("zhj.notetaking.action.update");
+        registerReceiver(mUpdateNoteListReceiver, filter);
         InitView();
         data_list = operate.getAll();
         Collections.reverse(data_list);
@@ -1059,6 +1076,8 @@ public class NoteActivity extends BaseActivity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         this.mErrorHandler = null;
+        unregisterReceiver(mUpdateNoteListReceiver);
+        mUpdateNoteListReceiver = null;
     }
 
     //分享相关

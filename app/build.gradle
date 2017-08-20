@@ -11,8 +11,8 @@ android {
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
         applicationId "zhj.notetaking"
-        versionCode 7
-        versionName "2.1.1"
+        versionCode 8
+        versionName "2.2.0"
     }
     buildTypes {
         debug {
@@ -22,9 +22,9 @@ android {
             buildConfigField "boolean", "USE_CANARY", "true"
         }
         release {
-            minifyEnabled true
-            shrinkResources true
-            zipAlignEnabled true
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled false
             buildConfigField "boolean", "LOG_DEBUG", "false"
             buildConfigField "boolean", "USE_CANARY", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
