@@ -142,8 +142,12 @@ public class TestWidgetProvider extends AppWidgetProvider {
             widget_data_list.add(data_list.get(0));
             widget_data_list.add(data_list.get(1));
             widget_data_list.add(new NoteInfo());
-        } else {
+        } else if (data_list.size() == 1) {
             widget_data_list.add(data_list.get(0));
+            widget_data_list.add(new NoteInfo());
+            widget_data_list.add(new NoteInfo());
+        } else {
+            widget_data_list.add(new NoteInfo());
             widget_data_list.add(new NoteInfo());
             widget_data_list.add(new NoteInfo());
         }

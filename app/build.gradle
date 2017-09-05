@@ -11,8 +11,8 @@ android {
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
         applicationId "zhj.notetaking"
-        versionCode 8
-        versionName "2.2.0"
+        versionCode 9
+        versionName "2.2.1"
     }
     buildTypes {
         debug {
@@ -39,11 +39,22 @@ android {
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }
+    dexOptions {
+        //使用增量模式构建
+        incremental true
+        //最大堆内存
+        javaMaxHeapSize "8g"
+        //是否支持大工程模式
+        jumboMode = true
+        //预编译
+        preDexLibraries = true
+        //线程数
+        threadCount = 8
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     //support
     compile(rootProject.ext.dependencies["support-v4"]) {
         exclude module: 'support-annotations'
@@ -58,7 +69,6 @@ dependencies {
         exclude module: 'support-v4'
     }
     compile rootProject.ext.dependencies["annotations"]
-
     //view
     compile(rootProject.ext.dependencies["butterknife"]) {
         exclude module: 'support-annotations'
@@ -68,15 +78,12 @@ dependencies {
         exclude module: 'butterknife-annotations'
     }
     compile rootProject.ext.dependencies["systembartint"]
-
     //toast
     compile rootProject.ext.dependencies["Toasty"]
-
     //support
     compile(rootProject.ext.dependencies["cardview-v7"]) {
         exclude module: 'support-annotations'
     }
-
     //rx
     compile rootProject.ext.dependencies["rxjava2"]
     compile(rootProject.ext.dependencies["rxandroid2"]) {
@@ -90,18 +97,20 @@ dependencies {
         exclude module: 'rxjava'
         exclude module: 'appcompat-v7'
     }
-
     //test
     compile rootProject.ext.dependencies["umeng-analytics"]
     compile rootProject.ext.dependencies["junit"]
     compile rootProject.ext.dependencies["bugly"]
-
     //tools
     compile rootProject.ext.dependencies["bmob"]
     compile rootProject.ext.dependencies["stetho"]
-
-
-
-
-
+    compile files('libs/MobCommons-2017.0823.1556.jar')
+    compile files('libs/MobTools-2017.0823.1556.jar')
+    compile files('libs/ShareSDK-Core-3.0.2.jar')
+    compile files('libs/ShareSDK-Email-3.0.2.jar')
+    compile files('libs/ShareSDK-Facebook-3.0.2.jar')
+    compile files('libs/ShareSDK-QQ-3.0.2.jar')
+    compile files('libs/ShareSDK-QZone-3.0.2.jar')
+    compile files('libs/ShareSDK-SinaWeibo-3.0.2.jar')
+    compile files('libs/ShareSDK-Twitter-3.0.2.jar')
 }
